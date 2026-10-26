@@ -25,7 +25,11 @@ export function Wizard() {
 
   useEffect(() => setWizard(true), [setWizard]);
 
+  // Remember the folder here too: "Skip" on an up-to-date installation never calls install_patch (which saves it), and
+  // without a saved folder the app would show this wizard again on every start.
   const finish = async () => {
+    const current = await api.getState();
+    if (current.gameFolder !== folder) await api.setState({ ...current, gameFolder: folder });
     await client.invalidateQueries();
     setPage("home");
     setWizard(false);
