@@ -1,0 +1,8 @@
+node_modules/
+dist-web/
+dist/
+/payload/*
+!/payload/.gitkeep
+src-tauri/target/
+src-tauri/gen/
+*.log

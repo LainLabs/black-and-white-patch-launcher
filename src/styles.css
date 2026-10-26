@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/* Launcher palette: warm stone darks, ivory light, gold accent (the good/evil duality of the game, without its art). */
+@theme {
+  --color-ink-950: #0d0b09;
+  --color-ink-900: #15120e;
+  --color-ink-850: #1b1712;
+  --color-ink-800: #231e18;
+  --color-ink-700: #2f2820;
+  --color-ink-600: #443a2e;
+  --color-ink-500: #6b5d4b;
+  --color-ivory-50: #fbf8f1;
+  --color-ivory-100: #f4efe4;
+  --color-ivory-300: #d9cfbc;
+  --color-ivory-400: #b9ad97;
+  --color-gold-300: #f0d48a;
+  --color-gold-400: #e8c56b;
+  --color-gold-500: #d4a845;
+  --color-gold-600: #a97c26;
+  --color-good-400: #7fc8a9;
+  --color-evil-400: #e0735f;
+  --font-display: "Constantia", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink-950);
+  color: var(--color-ivory-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  overflow: hidden;
+}
+
+input,
+textarea,
+select {
+  user-select: text;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-600);
+  border-radius: 5px;
+  border: 2px solid var(--color-ink-900);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 2px;
+}
+
+input[type="range"] {
+  accent-color: var(--color-gold-400);
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.04); }
+}
+.animate-glow {
+  animation: glow 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-glow { animation: none; }
+}

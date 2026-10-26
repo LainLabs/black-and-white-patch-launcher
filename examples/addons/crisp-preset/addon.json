@@ -1,0 +1,14 @@
+{
+  "id": "crisp-preset",
+  "name": "Crisp preset",
+  "version": "1.0.0",
+  "author": "Black & White Launcher",
+  "description": "8x anti-aliasing and 16x anisotropic filtering with the Direct3D 9 renderer.",
+  "kind": "preset",
+  "requires": { "decomp": ">=0.8.0" },
+  "settings": [
+    { "section": "Display", "key": "Renderer", "value": "1" },
+    { "section": "Display", "key": "AntiAliasing", "value": "8" },
+    { "section": "Display", "key": "Anisotropy", "value": "16" }
+  ]
+}
