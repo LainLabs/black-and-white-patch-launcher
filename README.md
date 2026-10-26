@@ -21,7 +21,7 @@ After that it opens on **Play**. Also there:
 - **Settings**: every option of `BWDecomp.ini` and the game's own resolution, detail and volume, with explanations.
   Comments in `BWDecomp.ini` are kept.
 - **Addons**: texture packs and settings presets, enabled and disabled in one click.
-- **Updates**: checks the project's GitHub releases; an update is checked against its SHA-256 sum before it runs.
+- **Updates**: checks the GitHub releases of [black-and-white-patch-tool](https://github.com/konstantine-v/black-and-white-patch-tool); an update is checked against its SHA-256 sum before it runs.
 - **About**: documentation, and removing the patch again (your changed settings, saves, screenshots and texture
   packs stay).
 

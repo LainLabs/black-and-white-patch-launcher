@@ -76,7 +76,7 @@ export function Updates() {
           <Badge>Launcher {info.data?.launcherVersion}</Badge>
           <Badge>Decompilation {info.data?.decompVersion || "not bundled"}</Badge>
         </div>
-        {!draft?.updateRepo && <div className="mt-4"><Notice>Updates are not configured: set the GitHub repository below.</Notice></div>}
+        {!draft?.updateRepo && <div className="mt-4"><Notice>No update repository: save to go back to the launcher's own.</Notice></div>}
         {update && (
           <div className="mt-4 space-y-3">
             {update.newer ? (
@@ -105,7 +105,7 @@ export function Updates() {
 
       {draft && (
         <Card title="Launcher options" actions={<Button variant="primary" size="sm" icon={<Save className="size-4" />} disabled={!dirty} busy={saveState.isPending} onClick={save}>Save</Button>}>
-          <Row label="Update repository" help="GitHub repository whose releases are checked, as owner/name.">
+          <Row label="Update repository" help="GitHub repository whose releases are checked, as owner/name. Leave it empty for the launcher's own.">
             <input className={`${inputClass} w-72`} value={draft.updateRepo} placeholder="owner/name" spellCheck={false}
               onChange={(e) => setDraft({ ...draft, updateRepo: e.target.value.trim() })} />
           </Row>

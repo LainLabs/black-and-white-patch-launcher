@@ -13,7 +13,7 @@ export function installDevMock() {
   let state: LauncherState = {
     gameFolder: fresh ? null : folder,
     onPlay: "minimize",
-    updateRepo: "example/BlackWhiteLauncher",
+    updateRepo: "konstantine-v/black-and-white-patch-tool",
     checkUpdatesOnStart: true,
     gameArguments: [],
   };

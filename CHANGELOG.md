@@ -19,5 +19,7 @@ First version. Bundles decompilation 0.11.0.
   one schema, with hints where settings interact. Edits keep the file's comments.
 - Addons: texture packs (to `Textures\Replace\<id>\`) and settings presets (reverted when disabled), installed from a
   folder or zip, with decomp version requirements. Unknown kinds are listed for later launchers.
-- Updates from GitHub releases, verified against the release's SHA-256 sums before the new setup runs.
+- Updates from the GitHub releases of `konstantine-v/black-and-white-patch-tool` (the newest release with a launcher
+  setup program; other releases there are ignored), verified against the release's SHA-256 sums before the new setup
+  runs.
 - Removing the patch from About (addons are disabled first; changed settings are kept).

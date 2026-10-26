@@ -109,8 +109,15 @@ interaction to `hints()` in `settings/logic.ts` if the key depends on another.
 
 **A new decomp release.** In the decomp: build. Here: `.\scripts\sync-payload.ps1`, run the tests, bump the launcher
 version (`package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`: package.ps1 refuses if they differ), add
-a CHANGELOG entry naming the decomp version, `.\scripts\package.ps1`, tag `vX.Y.Z`, publish `dist\BWLauncher-*` on the
-GitHub release (the update check needs `-Setup.exe` and `-SHA256SUMS.txt`).
+a CHANGELOG entry naming the decomp version, `.\scripts\package.ps1`, tag `vX.Y.Z`, publish `dist\BWLauncher-*` on a
+GitHub release in the update repository (the update check needs `-Setup.exe` and `-SHA256SUMS.txt`).
+
+**Update repository.** Launcher releases are published on `konstantine-v/black-and-white-patch-tool`
+(`state::DEFAULT_UPDATE_REPO`; a build can name another with `$env:BW_LAUNCHER_UPDATE_REPO`, and players can change it
+on the Updates page). It must be public: GitHub answers anonymous requests for a private repository with 404. The
+repository also carries the decompilation's own releases, so `updates::check` takes the newest non-draft,
+non-prerelease release with a `BWLauncher-<version>-Setup.exe` asset and reads the version from that name, never from
+the tag. Tag those releases `launcher-vX.Y.Z` there so they cannot clash with the decomp's `vX.Y.Z`. Never put a GitHub token in the launcher.
 
 **A new Rust command.** Write it in `commands.rs` (return `error::Result<T>`; `T: Serialize` with
 `#[serde(rename_all = "camelCase")]`), register it in `lib.rs` `generate_handler!`, add the typed wrapper in
