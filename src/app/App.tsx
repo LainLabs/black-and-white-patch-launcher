@@ -97,7 +97,7 @@ export function App() {
         <div className="mt-auto px-2 text-[11px] leading-relaxed text-ink-500">
           Launcher {info.data?.launcherVersion}
           <br />
-          Decompilation {info.data?.decompVersion || "not bundled"}
+          Patch {info.data?.decompVersion || "not bundled"}
         </div>
       </nav>
       <main className="min-w-0 flex-1 overflow-y-auto">

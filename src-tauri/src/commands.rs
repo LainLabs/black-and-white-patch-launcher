@@ -127,7 +127,7 @@ pub async fn install_patch(folder: String) -> Result<()> {
     let folder = folder_path(&folder)?;
     blocking(move || {
         if !payload::has_payload() {
-            return Err(Error::msg("This launcher was built without the decompilation (no payload)."));
+            return Err(Error::msg("This launcher was built without the patch (no payload)."));
         }
         if !game::holds_game(&folder) {
             return Err(Error::msg(format!("There is no runblack.exe in {}.", folder.display())));

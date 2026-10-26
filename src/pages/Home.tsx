@@ -60,7 +60,7 @@ export function Home() {
       <div className="relative flex min-h-full flex-col px-10 pb-8 pt-16">
         <div className="max-w-xl">
           <div className="mb-3 flex flex-wrap gap-2">
-            {p?.state === "installed" && <Badge tone="good">Decompilation {p.installedVersion}</Badge>}
+            {p?.state === "installed" && <Badge tone="good">Patch {p.installedVersion}</Badge>}
             {p?.state === "outdated" && <Badge tone="warn">Update available: {p.installedVersion} → {p.bundledVersion}</Badge>}
             {p?.state === "byHand" && <Badge tone="warn">Installed by hand</Badge>}
             {p?.state === "notInstalled" && <Badge tone="bad">Not installed</Badge>}
@@ -68,7 +68,7 @@ export function Home() {
           </div>
           <h1 className="font-display text-5xl leading-tight text-ivory-50">Black &amp; White</h1>
           <p className="mt-3 text-ivory-300">
-            Lionhead's god game on current Windows, with the decompilation's fixes and its Direct3D&nbsp;9 renderer.
+            Lionhead's god game on current Windows, with the patch's fixes and its Direct3D&nbsp;9 renderer.
           </p>
           <div className="mt-8 flex items-center gap-3">
             <Button variant="primary" size="lg" icon={<Play className="size-5" />} onClick={play}

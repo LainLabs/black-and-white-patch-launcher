@@ -21,7 +21,7 @@ pub enum GameBuild {
     Missing,
     /// Exists but cannot be read (or is implausibly large).
     Unreadable,
-    /// The unprotected 1.00 build the decompilation patches.
+    /// The unprotected 1.00 build the patch supports.
     Supported,
     /// The same build wrapped in SafeDisc: cannot start on current Windows.
     RetailSafeDisc,
@@ -80,11 +80,11 @@ fn describe(build: GameBuild, sha256: &str, file: &Path) -> String {
         GameBuild::Unreadable => format!("Cannot read {}.", file.display()),
         GameBuild::RetailSafeDisc => "This runblack.exe is the SafeDisc-protected retail build. SafeDisc needs the \
             secdrv.sys driver, which current Windows versions refuse to load, so this file cannot start.\n\n\
-            The decompilation targets the unprotected build of the same version that is on the Black & White disc \
+            The patch targets the unprotected build of the same version that is on the Black & White disc \
             (crack\\runblack.exe). Copy that file over the installed runblack.exe and check again."
             .to_string(),
         GameBuild::Unknown => format!(
-            "Unsupported runblack.exe (SHA-256 {sha256}).\n\nThe decompilation only supports Black & White 1.00 \
+            "Unsupported runblack.exe (SHA-256 {sha256}).\n\nThe patch only supports Black & White 1.00 \
              (English) with SHA-256 {}. The official patches 1.1 and 1.2 replace runblack.exe with builds that are \
              not supported yet.",
             payload::SUPPORTED_SHA256

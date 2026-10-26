@@ -1,4 +1,4 @@
-# Copies the decompilation's release files into payload\, which the launcher embeds at build time
+# Copies the patch's release files into payload\, which the launcher embeds at build time
 # (src-tauri\build.rs), and writes payload\payload.json describing them. Nothing from the game is copied.
 #
 #   .\scripts\sync-payload.ps1                                  # decomp at ..\BlackWhiteDecomp, existing build
@@ -23,7 +23,7 @@ $cmake = Join-Path $Decomp "CMakeLists.txt"
 $version = (Select-String -Path $cmake -Pattern 'project\(BlackWhiteDecomp VERSION ([0-9.]+)').Matches[0].Groups[1].Value
 $release = Join-Path $Decomp "build\Release"
 $dll = Join-Path $release "BWDecomp.dll"
-if (-not (Test-Path $dll)) { throw "$dll is missing: build the decompilation first (or pass -Build)" }
+if (-not (Test-Path $dll)) { throw "$dll is missing: build the patch first (or pass -Build)" }
 $built = (Get-Item $dll).VersionInfo.FileVersion
 if ($built -ne $version) { throw "build\Release is version $built, CMakeLists.txt says ${version}: build again (-Build)" }
 
@@ -78,4 +78,4 @@ $manifest = [ordered]@{
 }
 $json = $manifest | ConvertTo-Json -Depth 4
 [System.IO.File]::WriteAllText((Join-Path $payload "payload.json"), $json, (New-Object System.Text.UTF8Encoding $false))
-Write-Host "Payload: decompilation $version ($commit), $($entries.Count) files in $payload"
+Write-Host "Payload: patch $version ($commit), $($entries.Count) files in $payload"

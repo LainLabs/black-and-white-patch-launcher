@@ -1,4 +1,4 @@
-//! Embeds the decompilation's files (payload/, filled by scripts/sync-payload.ps1) into the launcher, so one
+//! Embeds the patch's files (payload/, filled by scripts/sync-payload.ps1) into the launcher, so one
 //! executable carries everything it installs. Without a payload the launcher still builds, for UI work, and says so.
 
 use std::{env, fmt::Write as _, fs, path::PathBuf};
@@ -54,7 +54,7 @@ fn main() {
             code.push_str("];\n");
         }
         Err(_) => {
-            println!("cargo:warning=payload/payload.json is missing: this launcher has no decompilation to install. Run scripts/sync-payload.ps1.");
+            println!("cargo:warning=payload/payload.json is missing: this launcher has no patch to install. Run scripts/sync-payload.ps1.");
             code.push_str(
                 "pub const DECOMP_VERSION: &str = \"\";\npub const DECOMP_COMMIT: &str = \"\";\n\
                  pub const SUPPORTED_SHA256: &str = \"86a30b08ab2ea8a240403d37f8f0303cf65aa5cde8e7f673049ab01654ccf755\";\n\

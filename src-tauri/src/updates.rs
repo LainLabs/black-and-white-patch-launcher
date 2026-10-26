@@ -1,8 +1,8 @@
-//! Update checks against GitHub releases. A launcher release carries the decompilation it installs, so one update
+//! Update checks against GitHub releases. A launcher release carries the patch it installs, so one update
 //! brings both. The installer asset is verified against the release's SHA256SUMS file before it runs.
 //!
 //! Release assets expected (written by scripts/package.ps1): `BWLauncher-<version>-Setup.exe` and
-//! `BWLauncher-<version>-SHA256SUMS.txt`. The repository may also publish other releases (the decompilation's own
+//! `BWLauncher-<version>-SHA256SUMS.txt`. The repository may also publish other releases (the patch's own
 //! zips), so the newest release carrying a launcher setup program is used, and its version is read from the asset
 //! name rather than the tag.
 
@@ -192,7 +192,7 @@ mod tests {
     #[test]
     fn picks_newest_launcher_release() {
         let releases = [
-            // A decompilation release in the same repository: higher tag, no launcher setup.
+            // A patch release in the same repository: higher tag, no launcher setup.
             release("v0.12.0", false, false, &["BWDecomp-0.12.0.zip"]),
             release("v0.3.0-beta", false, true, &["BWLauncher-0.3.0-Setup.exe"]),
             release("v0.2.0", true, false, &["BWLauncher-0.2.5-Setup.exe"]),

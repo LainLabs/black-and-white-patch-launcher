@@ -3,7 +3,7 @@
   "name": "Example texture pack",
   "version": "1.0.0",
   "author": "Black & White Launcher",
-  "description": "Layout example: put replacement images under textures/, named as docs/TEXTURES.md in the decomp describes (by game path, e.g. textures/data/textures/sky.png, or by hash, bw_<16 hex digits>.png). Contains no images.",
+  "description": "Layout example: put replacement images under textures/, named as TEXTURES.md in the patch's BWDecomp folder describes (by game path, e.g. textures/data/textures/sky.png, or by hash, bw_<16 hex digits>.png). Contains no images.",
   "kind": "texture-pack",
   "requires": { "decomp": ">=0.10.0" }
 }

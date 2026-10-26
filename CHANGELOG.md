@@ -1,15 +1,28 @@
 # Changelog
 
 Semantic versioning. The version is in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`
-(`scripts/package.ps1` refuses if they differ) and tagged in git as `vX.Y.Z`. Each entry names the decompilation it
+(`scripts/package.ps1` refuses if they differ) and tagged in git as `vX.Y.Z`. Each entry names the patch version it
 bundles.
+
+## 0.1.2
+
+Bundles patch 0.11.0.
+
+- The launcher now says **patch** everywhere: the game is patched at run time, not decompiled. (The installation
+  record `BWDecomp\Installed.txt` keeps its header, so the setup program still recognises launcher installations.)
+- Setup saves the chosen game folder when it finishes. Choosing **Skip** on an installation that was already up to
+  date left no folder saved, so the launcher showed setup again on every start.
+- Updates come from the GitHub releases of `konstantine-v/black-and-white-patch-tool`: the newest release with a
+  launcher setup program, its version read from the file name, so the patch's own releases there are ignored. A
+  private or missing repository is reported as such.
+- README rewritten, with the logo and screenshots.
 
 ## 0.1.0
 
-First version. Bundles decompilation 0.11.0.
+First version. Bundles patch 0.11.0.
 
-- Tauri 2 + React launcher carrying the decompilation's release files (embedded from `payload/` at build time).
-- First-run wizard: finds the game (as the decomp's setup does), checks `runblack.exe` by SHA-256 with the same
+- Tauri 2 + React launcher carrying the patch's release files (embedded from `payload/` at build time).
+- First-run wizard: finds the game (as the patch's setup program does), checks `runblack.exe` by SHA-256 with the same
   explanations, installs or updates the patch with the setup program's manifest (`BWDecomp\Installed.txt`), asks for
   administrator rights only when the folder needs them, sets `GameDir` when missing, then a quick setup.
 - Takes over installations made by `BWDecompSetup.exe` (its uninstaller and Settings > Apps entry are removed).
@@ -18,7 +31,7 @@ First version. Bundles decompilation 0.11.0.
 - Settings for all 27 `BWDecomp.ini` keys and the game's resolution, colour depth, detail and volumes, generated from
   one schema, with hints where settings interact. Edits keep the file's comments.
 - Addons: texture packs (to `Textures\Replace\<id>\`) and settings presets (reverted when disabled), installed from a
-  folder or zip, with decomp version requirements. Unknown kinds are listed for later launchers.
+  folder or zip, with patch version requirements. Unknown kinds are listed for later launchers.
 - Updates from the GitHub releases of `konstantine-v/black-and-white-patch-tool` (the newest release with a launcher
   setup program; other releases there are ignored), verified against the release's SHA-256 sums before the new setup
   runs.

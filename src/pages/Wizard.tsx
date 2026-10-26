@@ -43,7 +43,7 @@ export function Wizard() {
           <Mark className="size-12" />
           <div>
             <h1 className="font-display text-2xl text-ivory-50">Black &amp; White Launcher</h1>
-            <p className="text-sm text-ivory-400">Set up the decompilation for your copy of the game</p>
+            <p className="text-sm text-ivory-400">Set up the patch for your copy of the game</p>
           </div>
           {returning && (
             <Button variant="ghost" className="ml-auto" onClick={() => setWizard(false)}>Cancel</Button>
@@ -90,7 +90,7 @@ function Welcome({ onNext }: { onNext: () => void }) {
     <Card>
       <h2 className="font-display text-xl text-ivory-50">Welcome</h2>
       <p className="mt-3 text-sm leading-relaxed text-ivory-300">
-        This launcher installs the <strong className="text-ivory-50">Black &amp; White decompilation</strong>{" "}
+        This launcher installs the <strong className="text-ivory-50">Black &amp; White patch</strong>{" "}
         {info.data?.decompVersion && <Badge tone="gold">{info.data.decompVersion}</Badge>} into your installed copy of
         the game. It runs Lionhead's 2001 game on current Windows with its old problems fixed (SafeDisc, the
         DirectX&nbsp;7 check, crashes at high resolutions, hangs on quitting, the disc requirement) and adds a
@@ -107,7 +107,7 @@ function Welcome({ onNext }: { onNext: () => void }) {
       </ul>
       {!info.data?.hasPayload && (
         <div className="mt-4">
-          <Notice kind="error" title="This launcher has no decompilation bundled">
+          <Notice kind="error" title="This launcher has no patch bundled">
             It was built without running scripts/sync-payload.ps1, so it cannot install anything.
           </Notice>
         </div>
@@ -221,7 +221,7 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
   const upToDate = s?.state === "installed";
   return (
     <Card>
-      <h2 className="font-display text-xl text-ivory-50">{upToDate ? "Already installed" : "Install the decompilation"}</h2>
+      <h2 className="font-display text-xl text-ivory-50">{upToDate ? "Already installed" : "Install the patch"}</h2>
       <p className="mt-2 break-all text-sm text-ivory-400">{folder}</p>
       <div className="mt-4 space-y-3">
         {s?.state === "notInstalled" && <Notice>Nothing is installed in this folder yet.</Notice>}

@@ -4,9 +4,11 @@ Guide for agents (and people) working on this repository. Read it before changin
 
 ## What this is
 
-A desktop launcher for the **Black & White decompilation** (sibling repo `..\BlackWhiteDecomp`). One executable:
+A desktop launcher for the **Black & White patch** (sibling repo `..\BlackWhiteDecomp`, called "the decomp" below for
+the repository). Players only ever see the word **patch**: the game is patched at run time, not decompiled, so never
+write "decompilation" in UI text, messages or player docs. One executable:
 
-1. carries the decompilation's release files (`BWLaunch.exe`, `BWDecomp.dll`, `BWDecomp.ini`, player docs), embedded at
+1. carries the patch's release files (`BWLaunch.exe`, `BWDecomp.dll`, `BWDecomp.ini`, player docs), embedded at
    build time;
 2. on first run, walks the player through finding the game, checking `runblack.exe` and installing those files;
 3. afterwards is where the player presses **Play**, edits settings, manages addons and gets updates.
@@ -83,7 +85,8 @@ x86/Win32), Node 20+. Without `payload\` the launcher still builds, for UI work,
 
 - **Never ship or commit anything from the game** (code, data, art, icons). The art in `Backdrop.tsx` and the icon in
   `src-tauri/icon.svg` are original. `payload/` holds only the decomp's own files and is gitignored.
-- **Keep the manifest compatible** with `src/setup/Install.cpp`: header `# Black & White decompilation <version>`,
+- **Keep the manifest compatible** with `src/setup/Install.cpp`: header `# Black & White decompilation <version>` (the
+  setup program's wording; keep it even though the launcher says "patch"),
   lines `<sha256 lower-case> R|K <path with \>`, CRLF. Paths read from a manifest are checked with
   `paths::is_safe_relative_path` before anything is deleted.
 - **File safety:** every write into the game folder goes through `install::write_replacing` (write next to the target,
@@ -115,7 +118,7 @@ GitHub release in the update repository (the update check needs `-Setup.exe` and
 **Update repository.** Launcher releases are published on `konstantine-v/black-and-white-patch-tool`
 (`state::DEFAULT_UPDATE_REPO`; a build can name another with `$env:BW_LAUNCHER_UPDATE_REPO`, and players can change it
 on the Updates page). It must be public: GitHub answers anonymous requests for a private repository with 404. The
-repository also carries the decompilation's own releases, so `updates::check` takes the newest non-draft,
+repository also carries the patch's own releases, so `updates::check` takes the newest non-draft,
 non-prerelease release with a `BWLauncher-<version>-Setup.exe` asset and reads the version from that name, never from
 the tag. Tag those releases `launcher-vX.Y.Z` there so they cannot clash with the decomp's `vX.Y.Z`. Never put a GitHub token in the launcher.
 

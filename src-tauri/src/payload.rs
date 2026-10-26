@@ -1,4 +1,4 @@
-//! The decompilation's files, embedded by build.rs from payload/.
+//! The patch's files, embedded by build.rs from payload/.
 
 pub struct PayloadFile {
     /// Relative to the game folder, "\" separated.

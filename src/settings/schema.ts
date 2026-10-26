@@ -209,7 +209,7 @@ export const FIELDS: Field[] = [
   // ---- Advanced ----
   ini({
     section: "Hooks", key: "Disabled", tab: "advanced", label: "Disabled hooks", type: "text", fallback: "",
-    help: "Original addresses (hex) whose decompiled replacement is switched off, separated by spaces, e.g. 0x0045c610 0x00749a70.",
+    help: "Original addresses (hex) whose patched replacement is switched off, separated by spaces, e.g. 0x0045c610 0x00749a70.",
   }),
 ];
 

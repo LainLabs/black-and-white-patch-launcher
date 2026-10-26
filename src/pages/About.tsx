@@ -28,7 +28,7 @@ export function About() {
 
   const remove = async () => {
     const ok = await ask(
-      "Remove the decompilation from the game folder? Addons are disabled first. A BWDecomp.ini you changed, saved games, screenshots and texture packs stay.",
+      "Remove the patch from the game folder? Addons are disabled first. A BWDecomp.ini you changed, saved games, screenshots and texture packs stay.",
       { title: "Remove the patch", kind: "warning" },
     );
     if (!ok) return;
@@ -52,7 +52,7 @@ export function About() {
           <h1 className="font-display text-3xl text-ivory-50">About</h1>
           <div className="mt-1 flex flex-wrap gap-2">
             <Badge>Launcher {info.data?.launcherVersion}</Badge>
-            <Badge>Decompilation {info.data?.decompVersion || "not bundled"}{info.data?.decompCommit ? ` (${info.data.decompCommit})` : ""}</Badge>
+            <Badge>Patch {info.data?.decompVersion || "not bundled"}{info.data?.decompCommit ? ` (${info.data.decompCommit})` : ""}</Badge>
           </div>
         </div>
       </header>
@@ -85,7 +85,7 @@ export function About() {
       </Card>
 
       <p className="text-xs leading-relaxed text-ink-500">
-        Black &amp; White is a game by Lionhead Studios. This launcher and the decompilation are fan projects, not
+        Black &amp; White is a game by Lionhead Studios. This launcher and the patch are fan projects, not
         affiliated with or endorsed by Lionhead Studios or the game's publishers, and contain none of the game's code
         or data. You need your own copy of the game. Launcher state: {info.data?.stateDir}
       </p>

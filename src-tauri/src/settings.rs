@@ -19,7 +19,7 @@ pub struct SettingsSnapshot {
     /// What BWDecomp.ini says (the shipped defaults when the game folder has none).
     pub ini: Vec<IniValue>,
     pub ini_exists: bool,
-    /// The settings as shipped with the bundled decompilation.
+    /// The settings as shipped with the bundled patch.
     pub defaults: Vec<IniValue>,
     /// The game's own settings (HKCU ...\Black & White\BWSetup).
     pub game: BTreeMap<String, u32>,

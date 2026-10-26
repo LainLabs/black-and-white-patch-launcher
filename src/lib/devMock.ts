@@ -57,7 +57,7 @@ export function installDevMock() {
     const a = (args ?? {}) as Record<string, unknown>;
     switch (cmd) {
       case "app_info":
-        return { launcherVersion: "0.1.0", decompVersion: "0.11.0", decompCommit: "938ed3d", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
+        return { launcherVersion: "0.1.2", decompVersion: "0.11.0", decompCommit: "938ed3d", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
       case "get_state":
         return state;
       case "set_state":
@@ -81,7 +81,7 @@ export function installDevMock() {
       case "list_addons":
         return addons;
       case "check_updates":
-        return { currentVersion: "0.1.0", latestVersion: "0.2.0", newer: true, name: "Launcher 0.2.0", notes: "- Decompilation 0.12.0\n- Faster texture pack switching", pageUrl: "https://github.com/example", publishedAt: "", installer: null, sums: null };
+        return { currentVersion: "0.1.2", latestVersion: "0.2.0", newer: true, name: "Launcher 0.2.0", notes: "- Patch 0.12.0\n- Faster texture pack switching", pageUrl: "https://github.com/example", publishedAt: "", installer: null, sums: null };
       case "read_log_tail":
         return "[00:00:01] BWDecomp 0.11.0 attached to runblack.exe\n[00:00:01] Installed 24 hooks";
       case "plugin:event|listen":

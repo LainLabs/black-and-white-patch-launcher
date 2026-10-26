@@ -63,7 +63,7 @@ export function Updates() {
       <header>
         <h1 className="font-display text-3xl text-ivory-50">Updates</h1>
         <p className="mt-1 text-sm text-ivory-400">
-          Each launcher release carries a build of the decompilation, so updating the launcher updates the game's patch too.
+          Each launcher release carries a build of the patch, so updating the launcher updates the game's patch too.
         </p>
       </header>
 
@@ -74,7 +74,7 @@ export function Updates() {
       }>
         <div className="flex flex-wrap gap-2">
           <Badge>Launcher {info.data?.launcherVersion}</Badge>
-          <Badge>Decompilation {info.data?.decompVersion || "not bundled"}</Badge>
+          <Badge>Patch {info.data?.decompVersion || "not bundled"}</Badge>
         </div>
         {!draft?.updateRepo && <div className="mt-4"><Notice>No update repository: save to go back to the launcher's own.</Notice></div>}
         {update && (

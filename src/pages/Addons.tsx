@@ -113,7 +113,7 @@ function AddonRow({ addon, folder, busy, onToggle, onDelete }: {
           </div>
           {m.author && <p className="text-xs text-ivory-400">by {m.author}</p>}
           {m.description && <p className="mt-2 text-sm text-ivory-300">{m.description}</p>}
-          <p className="mt-1 text-xs text-ink-500">{addon.fileCount} {kind?.unit ?? "items"}{m.requires.decomp ? ` · needs decompilation ${m.requires.decomp}` : ""}</p>
+          <p className="mt-1 text-xs text-ink-500">{addon.fileCount} {kind?.unit ?? "items"}{m.requires.decomp ? ` · needs patch ${m.requires.decomp}` : ""}</p>
           {addon.problem && <div className="mt-2"><Notice kind="warning">{addon.problem}</Notice></div>}
         </div>
         <div className="flex items-center gap-1">

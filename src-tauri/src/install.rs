@@ -1,9 +1,10 @@
-//! Copying the decompilation into a game folder and removing it again, compatible with the decomp's setup program
+//! Copying the patch into a game folder and removing it again, compatible with the decomp's setup program
 //! (src/setup/Install.cpp): the same files, the same manifest `BWDecomp\Installed.txt`, the same rules. A folder
 //! installed by BWDecompSetup.exe is updated or removed by the launcher and the other way round.
 //!
 //! Manifest: `# Black & White decompilation <version>`, then one line per file: `<sha256> R|K <path>`. R files are
 //! replaced on update; K files (BWDecomp.ini) are installed only when missing and removed only when unchanged.
+//! The header keeps the word "decompilation" although the launcher says "patch": it is the setup program's format.
 
 use std::io::Write as _;
 use std::path::{Path, PathBuf};
@@ -219,7 +220,7 @@ pub fn install_files(folder: &Path, files: &[InstallFile], version: &str) -> Res
 pub fn remove_files(folder: &Path) -> Result<RemoveResult> {
     let manifest = read_manifest(folder).ok_or_else(|| {
         Error::msg(format!(
-            "The decompilation is not installed in {} (there is no {MANIFEST_PATH}).",
+            "The patch is not installed in {} (there is no {MANIFEST_PATH}).",
             folder.display()
         ))
     })?;

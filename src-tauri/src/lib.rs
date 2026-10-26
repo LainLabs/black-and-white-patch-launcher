@@ -1,4 +1,4 @@
-//! Black & White Launcher: installs the decompilation into the player's game, edits its settings and starts it.
+//! Black & White Launcher: installs the patch into the player's game, edits its settings and starts it.
 //! See AGENTS.md for how the pieces fit and how they map to the decomp repository.
 
 pub mod addons;

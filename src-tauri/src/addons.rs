@@ -54,7 +54,7 @@ pub struct AddonManifest {
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Requires {
-    /// Semver range of the decompilation, e.g. ">=0.10.0".
+    /// Semver range of the patch, e.g. ">=0.10.0".
     #[serde(default)]
     pub decomp: Option<String>,
 }
@@ -172,7 +172,7 @@ fn problem(manifest: &AddonManifest, decomp_version: &str) -> String {
     if let (Some(range), false) = (&manifest.requires.decomp, decomp_version.is_empty()) {
         match (semver::VersionReq::parse(range), semver::Version::parse(decomp_version)) {
             (Ok(req), Ok(version)) if !req.matches(&version) => {
-                return format!("Needs decompilation {range}; this is {decomp_version}.");
+                return format!("Needs patch {range}; this is {decomp_version}.");
             }
             (Err(_), _) => return format!("Its required version \"{range}\" is not a version range."),
             _ => {}
