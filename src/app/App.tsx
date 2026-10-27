@@ -1,11 +1,11 @@
 // Top level: the first-run wizard until a game folder is set up, then the launcher with its side navigation.
 
 import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Download, Home as HomeIcon, Info, Puzzle, SlidersHorizontal } from "lucide-react";
 import { api } from "@/lib/api";
-import { keys, useAppInfo, useLauncherState } from "@/lib/queries";
+import { keys, useAppInfo, useLauncherState, useUpdateCheck } from "@/lib/queries";
 import { useStore, type Page } from "@/lib/store";
 import { Mark, cx } from "@/components/ui";
 import { Wizard } from "@/pages/Wizard";
@@ -46,16 +46,11 @@ export function App() {
     return () => void unlisten.then((f) => f());
   }, [client, setFailure, setRun, state.data?.gameFolder]);
 
-  // Quiet update check on start (Updates page shows details); failures are ignored here.
-  const repo = state.data?.checkUpdatesOnStart ? state.data.updateRepo : "";
-  const update = useQuery({
-    queryKey: ["update", repo],
-    queryFn: () => api.checkUpdates(repo),
-    enabled: !!repo,
-    retry: false,
-    staleTime: 6 * 60 * 60 * 1000,
-  });
-  const updateAvailable = !!update.data?.newer;
+  // Quiet update checks on start, launcher and patch (the Updates page shows details); failures are ignored here.
+  const automatic = !!state.data?.checkUpdatesOnStart;
+  const launcherUpdate = useUpdateCheck("launcher", automatic);
+  const patchUpdate = useUpdateCheck("patch", automatic && !!state.data?.gameFolder);
+  const updateAvailable = !!launcherUpdate.data?.newer || !!patchUpdate.data?.newer;
 
   if (state.isLoading || info.isLoading) {
     return <div className="grid h-full place-items-center"><Mark className="size-16 animate-pulse" /></div>;

@@ -50,7 +50,7 @@ export function Home() {
 
   const p = patch.data;
   const supported = check.data?.build === "supported";
-  const installed = p && (p.state === "installed" || p.state === "outdated" || p.state === "byHand");
+  const installed = p && (p.state === "installed" || p.state === "newer" || p.state === "outdated" || p.state === "byHand");
   const running = run !== "idle" || p?.running;
   const open = (path: string, create = false) => api.openFolder(path, create).catch((e) => setError(errorText(e)));
 
@@ -60,7 +60,7 @@ export function Home() {
       <div className="relative flex min-h-full flex-col px-10 pb-8 pt-16">
         <div className="max-w-xl">
           <div className="mb-3 flex flex-wrap gap-2">
-            {p?.state === "installed" && <Badge tone="good">Patch {p.installedVersion}</Badge>}
+            {(p?.state === "installed" || p?.state === "newer") && <Badge tone="good">Patch {p.installedVersion}</Badge>}
             {p?.state === "outdated" && <Badge tone="warn">Update available: {p.installedVersion} → {p.bundledVersion}</Badge>}
             {p?.state === "byHand" && <Badge tone="warn">Installed by hand</Badge>}
             {p?.state === "notInstalled" && <Badge tone="bad">Not installed</Badge>}

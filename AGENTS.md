@@ -113,14 +113,24 @@ interaction to `hints()` in `settings/logic.ts` if the key depends on another.
 **A new decomp release.** In the decomp: build. Here: `.\scripts\sync-payload.ps1`, run the tests, bump the launcher
 version (`package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`: package.ps1 refuses if they differ), add
 a CHANGELOG entry naming the decomp version, `.\scripts\package.ps1`, tag `vX.Y.Z`, publish `dist\BWLauncher-*` on a
-GitHub release in the update repository (the update check needs `-Setup.exe` and `-SHA256SUMS.txt`).
+GitHub release in the launcher repository (the update check needs `-Setup.exe` and `-SHA256SUMS.txt`).
 
-**Update repository.** Launcher releases are published on `konstantine-v/black-and-white-patch-tool`
-(`state::DEFAULT_UPDATE_REPO`; a build can name another with `$env:BW_LAUNCHER_UPDATE_REPO`, and players can change it
-on the Updates page). It must be public: GitHub answers anonymous requests for a private repository with 404. The
-repository also carries the patch's own releases, so `updates::check` takes the newest non-draft,
-non-prerelease release with a `BWLauncher-<version>-Setup.exe` asset and reads the version from that name, never from
-the tag. Tag those releases `launcher-vX.Y.Z` there so they cannot clash with the decomp's `vX.Y.Z`. Never put a GitHub token in the launcher.
+**Update repositories.** The launcher checks two, each a setting on the Updates page (empty = the default):
+
+| Product | Default (`state.rs`) | Build override | Release files the check needs | What installing does |
+|---|---|---|---|---|
+| Launcher | `konstantine-v/black-and-white-patch-launcher` | `BW_LAUNCHER_UPDATE_REPO` | `BWLauncher-<v>-Setup.exe`, `BWLauncher-<v>-SHA256SUMS.txt` | runs the new setup, closes the launcher |
+| Patch | `konstantine-v/black-and-white-patch-tool` | `BW_PATCH_UPDATE_REPO` | `BWDecomp-<v>.zip`, `BWDecomp-<v>-SHA256SUMS.txt` (the decomp's `package.ps1` writes both) | installs the zip's files into the game folder (`Request::InstallZip`), with rights if needed |
+
+`updates::check` takes the newest non-draft, non-prerelease release with the product's file and reads the version
+from that file name, never from the tag, so other releases and files in a repository do no harm
+(`BWDecomp-<v>-Release.zip` is ignored: only plain versions count). Nothing downloaded is used without a matching
+SHA-256 from the release's sums file; a release without one is shown with a link to its page only. A patch zip must
+hold `BWDecomp-<v>/` with at least `BWLaunch.exe`, `BWDecomp.dll` and `BWDecomp.ini` (`updates::patch_files`).
+A downloaded patch newer than the bundled one gives patch state `newer`: Home and the wizard must never offer to
+"update" it back to the bundled version, and addon requirements are checked against the installed version
+(`commands::patch_version`). Both repositories must be public: GitHub answers anonymous requests for a private one
+with 404. Never put a GitHub token in the launcher.
 
 **A new Rust command.** Write it in `commands.rs` (return `error::Result<T>`; `T: Serialize` with
 `#[serde(rename_all = "camelCase")]`), register it in `lib.rs` `generate_handler!`, add the typed wrapper in

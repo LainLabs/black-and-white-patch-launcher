@@ -219,9 +219,11 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
   };
 
   const upToDate = s?.state === "installed";
+  // A newer patch from Updates: reinstalling would go back to the bundled one.
+  const newer = s?.state === "newer";
   return (
     <Card>
-      <h2 className="font-display text-xl text-ivory-50">{upToDate ? "Already installed" : "Install the patch"}</h2>
+      <h2 className="font-display text-xl text-ivory-50">{upToDate || newer ? "Already installed" : "Install the patch"}</h2>
       <p className="mt-2 break-all text-sm text-ivory-400">{folder}</p>
       <div className="mt-4 space-y-3">
         {s?.state === "notInstalled" && <Notice>Nothing is installed in this folder yet.</Notice>}
@@ -231,6 +233,11 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
           </Notice>
         )}
         {upToDate && <Notice kind="success" title={`Version ${s.installedVersion} is installed`}>You can reinstall it to repair missing files.</Notice>}
+        {newer && (
+          <Notice kind="success" title={`Version ${s.installedVersion} is installed`}>
+            It is newer than the patch in this launcher ({s.bundledVersion}), so it is kept. Updates has newer ones.
+          </Notice>
+        )}
         {s?.state === "byHand" && (
           <Notice title="Files copied by hand were found">
             BWDecomp.dll is there without an installation record. Installing replaces the program files and keeps your BWDecomp.ini.
@@ -251,13 +258,17 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
       </div>
       <div className="mt-6 flex justify-between">
         <Button variant="ghost" icon={<ArrowLeft className="size-4" />} onClick={onBack}>Back</Button>
-        <div className="flex gap-2">
-          {upToDate && <Button onClick={onNext}>Skip</Button>}
-          <Button variant="primary" onClick={install} busy={busy} disabled={!s || s.running}
-            icon={s?.needsRights ? <ShieldAlert className="size-4" /> : undefined}>
-            {upToDate ? "Reinstall" : s?.state === "outdated" ? "Update" : "Install"}
-          </Button>
-        </div>
+        {newer ? (
+          <Button variant="primary" onClick={onNext}>Continue <ArrowRight className="size-4" /></Button>
+        ) : (
+          <div className="flex gap-2">
+            {upToDate && <Button onClick={onNext}>Skip</Button>}
+            <Button variant="primary" onClick={install} busy={busy} disabled={!s || s.running}
+              icon={s?.needsRights ? <ShieldAlert className="size-4" /> : undefined}>
+              {upToDate ? "Reinstall" : s?.state === "outdated" ? "Update" : "Install"}
+            </Button>
+          </div>
+        )}
       </div>
     </Card>
   );

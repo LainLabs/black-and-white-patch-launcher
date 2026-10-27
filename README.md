@@ -53,7 +53,7 @@ the registry, or know any of the above.
 | **Play** | Starts the patched game. If it fails, the launcher shows the end of its log. |
 | **Settings** | Every patch option and the game's own resolution, detail and volume, explained, with hints when one setting affects another. Your comments in `BWDecomp.ini` are kept. |
 | **Addons** | Texture packs and settings presets, added from a folder or zip and switched on and off with one click. Turning a preset off puts your settings back. |
-| **Updates** | Checks for new launcher releases. Each release carries the latest patch, and downloads are checked against their SHA-256 sums before they run. |
+| **Updates** | Checks for new launchers and new patches, which are released separately. A newer patch installs straight into your game folder without waiting for a new launcher. Every download is checked against its release's SHA-256 sums before it is used. |
 | **About** | The patch's documentation, running setup again, and removing the patch. |
 
 <p align="center">

@@ -10,12 +10,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::{Error, Result};
 use crate::fsops::FileOp;
-use crate::{fsops, install, payload};
+use crate::{fsops, install, payload, updates};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "camelCase")]
 pub enum Request {
     Install { folder: PathBuf },
+    /// A newer patch from the patch's releases, already checked against its SHA-256 sum.
+    InstallZip { folder: PathBuf, zip: PathBuf, version: String },
     Remove { folder: PathBuf },
     FileOps { root: PathBuf, ops: Vec<FileOp> },
 }
@@ -36,6 +38,10 @@ pub fn execute(request: &Request) -> Result<serde_json::Value> {
                 .map(|f| install::InstallFile { path: f.path, keep: f.keep, data: f.data })
                 .collect();
             install::install_files(folder, &files, payload::DECOMP_VERSION)?;
+            Ok(serde_json::Value::Null)
+        }
+        Request::InstallZip { folder, zip, version } => {
+            updates::install_patch_zip(folder, zip, version)?;
             Ok(serde_json::Value::Null)
         }
         Request::Remove { folder } => Ok(serde_json::to_value(install::remove_files(folder)?)?),

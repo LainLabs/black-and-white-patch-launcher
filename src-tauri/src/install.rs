@@ -19,6 +19,12 @@ pub const DATA_FOLDER: &str = "BWDecomp";
 pub const MANIFEST_PATH: &str = r"BWDecomp\Installed.txt";
 /// BWDecompSetup's uninstaller; a manifest listing it came from the setup program.
 pub const LEGACY_UNINSTALLER: &str = r"BWDecomp\Uninstall.exe";
+
+/// The player's settings: installed only when missing, removed only when unchanged. scripts/sync-payload.ps1 marks
+/// the same file in the bundled patch; downloaded patches use this.
+pub fn is_keep_file(path: &str) -> bool {
+    path.eq_ignore_ascii_case("BWDecomp.ini")
+}
 /// Written by BWDecomp.dll, not installed; removed with it.
 const GENERATED_FILES: &[&str] = &["BWDecomp.log", "BWDecomp.directx.csv"];
 const MANIFEST_HEADER: &str = "# Black & White decompilation ";

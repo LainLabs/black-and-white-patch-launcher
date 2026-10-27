@@ -13,7 +13,8 @@ export function installDevMock() {
   let state: LauncherState = {
     gameFolder: fresh ? null : folder,
     onPlay: "minimize",
-    updateRepo: "konstantine-v/black-and-white-patch-tool",
+    launcherRepo: "konstantine-v/black-and-white-patch-launcher",
+    patchRepo: "konstantine-v/black-and-white-patch-tool",
     checkUpdatesOnStart: true,
     gameArguments: [],
   };
@@ -57,7 +58,7 @@ export function installDevMock() {
     const a = (args ?? {}) as Record<string, unknown>;
     switch (cmd) {
       case "app_info":
-        return { launcherVersion: "0.1.2", decompVersion: "0.11.0", decompCommit: "938ed3d", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
+        return { launcherVersion: "0.1.3", decompVersion: "0.11.0", decompCommit: "938ed3d", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
       case "get_state":
         return state;
       case "set_state":
@@ -80,8 +81,14 @@ export function installDevMock() {
         return { modes: [[2560, 1440], [1920, 1080], [1600, 900], [1280, 720], [1024, 768], [800, 600]].map(([width, height]) => ({ width, height })), current: { width: 2560, height: 1440 } };
       case "list_addons":
         return addons;
-      case "check_updates":
-        return { currentVersion: "0.1.2", latestVersion: "0.2.0", newer: true, name: "Launcher 0.2.0", notes: "- Patch 0.12.0\n- Faster texture pack switching", pageUrl: "https://github.com/example", publishedAt: "", installer: null, sums: null };
+      case "check_updates": {
+        const asset = (name: string) => ({ name, url: `https://github.com/example/${name}`, size: 1 });
+        return a.product === "launcher"
+          ? { product: "launcher", currentVersion: "0.1.3", latestVersion: "0.1.3", newer: false, name: "Launcher 0.1.3", notes: "", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWLauncher-0.1.3-Setup.exe"), sums: asset("BWLauncher-0.1.3-SHA256SUMS.txt") }
+          : { product: "patch", currentVersion: "0.11.0", latestVersion: "0.11.1", newer: true, name: "v0.11.1", notes: "- Example release notes", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWDecomp-0.11.1.zip"), sums: asset("BWDecomp-0.11.1-SHA256SUMS.txt") };
+      }
+      case "install_patch_update":
+        return null;
       case "read_log_tail":
         return "[00:00:01] BWDecomp 0.11.0 attached to runblack.exe\n[00:00:01] Installed 24 hooks";
       case "plugin:event|listen":

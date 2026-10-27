@@ -4,6 +4,17 @@ Semantic versioning. The version is in `package.json`, `src-tauri/Cargo.toml` an
 (`scripts/package.ps1` refuses if they differ) and tagged in git as `vX.Y.Z`. Each entry names the patch version it
 bundles.
 
+## 0.1.3
+
+Bundles patch 0.11.0.
+
+- Updates check two repositories: new launchers in `konstantine-v/black-and-white-patch-launcher` and new patches in
+  `konstantine-v/black-and-white-patch-tool`, each with its own setting. A newer patch (`BWDecomp-<version>.zip`) is
+  checked against its release's SHA-256 sums and installed into the game folder from the Updates page, without a new
+  launcher. A patch newer than the bundled one is kept: setup and Play no longer offer to replace it with the older
+  bundled one, and addons are checked against the installed patch.
+- The single `updateRepo` setting of 0.1.x is replaced by `launcherRepo` and `patchRepo`.
+
 ## 0.1.2
 
 Bundles patch 0.11.0.

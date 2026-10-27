@@ -72,7 +72,8 @@ pub fn run() {
             commands::delete_addon,
             commands::set_addon_enabled,
             commands::check_updates,
-            commands::install_update,
+            commands::install_launcher_update,
+            commands::install_patch_update,
         ])
         .run(tauri::generate_context!())
         .expect("error while running the launcher");

@@ -54,8 +54,10 @@ pub fn get_state() -> state::LauncherState {
 
 #[tauri::command]
 pub fn set_state(value: state::LauncherState) -> Result<()> {
-    if !value.update_repo.is_empty() && !updates::is_valid_repo(&value.update_repo) {
-        return Err(Error::msg("The update repository must look like owner/name."));
+    for repo in [&value.launcher_repo, &value.patch_repo] {
+        if !repo.is_empty() && !updates::is_valid_repo(repo) {
+            return Err(Error::msg(format!("{repo}: an update repository must look like owner/name.")));
+        }
     }
     state::save(&value)
 }
@@ -78,7 +80,8 @@ pub async fn check_game(folder: String) -> Result<game::GameCheck> {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PatchStatus {
-    /// "notInstalled", "installed", "outdated" (another version), "byHand" (files without a manifest).
+    /// "notInstalled", "installed" (the bundled version), "outdated" (an older or unknown version), "newer" (a newer
+    /// patch downloaded from the patch's releases), "byHand" (files without a manifest).
     state: &'static str,
     installed_version: String,
     bundled_version: &'static str,
@@ -95,7 +98,7 @@ pub async fn patch_status(folder: String) -> Result<PatchStatus> {
         let manifest = install::read_manifest(&folder);
         let (state, installed_version, from_setup) = match &manifest {
             Some(m) => (
-                if m.version == payload::DECOMP_VERSION { "installed" } else { "outdated" },
+                compare_with_bundled(&m.version),
                 m.version.clone(),
                 m.entries.iter().any(|e| e.path.eq_ignore_ascii_case(install::LEGACY_UNINSTALLER)),
             ),
@@ -114,6 +117,25 @@ pub async fn patch_status(folder: String) -> Result<PatchStatus> {
     .await
 }
 
+fn compare_with_bundled(installed: &str) -> &'static str {
+    if installed == payload::DECOMP_VERSION {
+        return "installed";
+    }
+    match (semver::Version::parse(installed), semver::Version::parse(payload::DECOMP_VERSION)) {
+        (Ok(i), Ok(b)) if i > b => "newer",
+        _ => "outdated",
+    }
+}
+
+/// The patch version in use: what the game folder's manifest records, else the bundled one.
+fn patch_version(folder: Option<&Path>) -> String {
+    folder
+        .and_then(install::read_manifest)
+        .map(|m| m.version)
+        .filter(|v| !v.is_empty())
+        .unwrap_or_else(|| payload::DECOMP_VERSION.to_string())
+}
+
 fn ensure_not_running(folder: &Path) -> Result<()> {
     if game::is_game_running(folder) {
         return Err(Error::msg("Close Black & White first: it is running from this folder."));
@@ -129,26 +151,30 @@ pub async fn install_patch(folder: String) -> Result<()> {
         if !payload::has_payload() {
             return Err(Error::msg("This launcher was built without the patch (no payload)."));
         }
-        if !game::holds_game(&folder) {
-            return Err(Error::msg(format!("There is no runblack.exe in {}.", folder.display())));
-        }
-        ensure_not_running(&folder)?;
-        let had_setup_uninstaller = folder.join(install::LEGACY_UNINSTALLER).exists();
-        let rights = elevate::install_needs_rights(&folder);
-        elevate::execute_with_rights(&Request::Install { folder: folder.clone() }, rights)?;
-        // BWDecompSetup's uninstaller is gone now: its Settings > Apps entry would point at nothing.
-        if had_setup_uninstaller
-            && !folder.join(install::LEGACY_UNINSTALLER).exists()
-            && registry::legacy_install_location().is_some_and(|l| crate::paths::same_path(&l, &folder))
-        {
-            registry::remove_legacy_uninstall_entry();
-        }
-        registry::ensure_game_dir(&folder)?;
-        let mut s = state::load();
-        s.game_folder = Some(folder);
-        state::save(&s)
+        install_into(&folder, &Request::Install { folder: folder.clone() })
     })
     .await
+}
+
+/// Runs an install request for `folder` (with rights if needed), then what every installation needs afterwards.
+fn install_into(folder: &Path, request: &Request) -> Result<()> {
+    if !game::holds_game(folder) {
+        return Err(Error::msg(format!("There is no runblack.exe in {}.", folder.display())));
+    }
+    ensure_not_running(folder)?;
+    let had_setup_uninstaller = folder.join(install::LEGACY_UNINSTALLER).exists();
+    elevate::execute_with_rights(request, elevate::install_needs_rights(folder))?;
+    // BWDecompSetup's uninstaller is gone now: its Settings > Apps entry would point at nothing.
+    if had_setup_uninstaller
+        && !folder.join(install::LEGACY_UNINSTALLER).exists()
+        && registry::legacy_install_location().is_some_and(|l| crate::paths::same_path(&l, folder))
+    {
+        registry::remove_legacy_uninstall_entry();
+    }
+    registry::ensure_game_dir(folder)?;
+    let mut s = state::load();
+    s.game_folder = Some(folder.to_path_buf());
+    state::save(&s)
 }
 
 #[tauri::command]
@@ -156,7 +182,7 @@ pub async fn remove_patch(folder: String) -> Result<install::RemoveResult> {
     let folder = folder_path(&folder)?;
     blocking(move || {
         ensure_not_running(&folder)?;
-        for addon in addons::list(Some(&folder), payload::DECOMP_VERSION).into_iter().filter(|a| a.enabled) {
+        for addon in addons::list(Some(&folder), &patch_version(Some(&folder))).into_iter().filter(|a| a.enabled) {
             addons::disable(&folder, &addon.manifest.id)?;
         }
         let rights = elevate::install_needs_rights(&folder);
@@ -220,7 +246,11 @@ pub fn open_folder(path: String, create: bool) -> Result<()> {
 
 #[tauri::command]
 pub async fn list_addons(folder: Option<String>) -> Result<Vec<addons::AddonInfo>> {
-    blocking(move || Ok(addons::list(folder.as_deref().map(Path::new), payload::DECOMP_VERSION))).await
+    blocking(move || {
+        let folder = folder.as_deref().map(Path::new);
+        Ok(addons::list(folder, &patch_version(folder)))
+    })
+    .await
 }
 
 #[tauri::command]
@@ -239,7 +269,7 @@ pub async fn set_addon_enabled(folder: String, id: String, enabled: bool) -> Res
     blocking(move || {
         ensure_not_running(&folder)?;
         if enabled {
-            addons::enable(&folder, &id, payload::DECOMP_VERSION)
+            addons::enable(&folder, &id, &patch_version(Some(&folder)))
         } else {
             addons::disable(&folder, &id)
         }
@@ -247,14 +277,38 @@ pub async fn set_addon_enabled(folder: String, id: String, enabled: bool) -> Res
     .await
 }
 
+/// The newest launcher or patch release in `repo`. A patch is compared with what `folder` has installed (else the
+/// bundled patch).
 #[tauri::command]
-pub async fn check_updates(repo: String) -> Result<updates::UpdateInfo> {
-    blocking(move || updates::check(repo.trim())).await
+pub async fn check_updates(product: updates::Product, repo: String, folder: Option<String>) -> Result<updates::UpdateInfo> {
+    blocking(move || {
+        let current = match product {
+            updates::Product::Launcher => env!("CARGO_PKG_VERSION").to_string(),
+            updates::Product::Patch => patch_version(folder.as_deref().map(Path::new)),
+        };
+        updates::check(repo.trim(), product, &current)
+    })
+    .await
+}
+
+/// Downloads a newer patch, checks it against the release's SHA-256 sums and installs it into the game folder.
+#[tauri::command]
+pub async fn install_patch_update(folder: String, info: updates::UpdateInfo) -> Result<()> {
+    let folder = folder_path(&folder)?;
+    blocking(move || {
+        ensure_not_running(&folder)?;
+        let zip = updates::download_patch(&info)?;
+        let request = Request::InstallZip { folder: folder.clone(), zip: zip.clone(), version: info.latest_version.clone() };
+        let result = install_into(&folder, &request);
+        let _ = std::fs::remove_file(&zip);
+        result
+    })
+    .await
 }
 
 /// Downloads and verifies the new launcher's setup program, starts it and closes the launcher.
 #[tauri::command]
-pub async fn install_update(app: AppHandle, info: updates::UpdateInfo) -> Result<()> {
+pub async fn install_launcher_update(app: AppHandle, info: updates::UpdateInfo) -> Result<()> {
     let installer = blocking(move || updates::download_installer(&info)).await?;
     std::process::Command::new(&installer)
         .spawn()

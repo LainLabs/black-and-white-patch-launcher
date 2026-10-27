@@ -16,7 +16,8 @@ export type AppInfo = {
 export type LauncherState = {
   gameFolder: string | null;
   onPlay: "keep" | "minimize" | "close";
-  updateRepo: string;
+  launcherRepo: string;
+  patchRepo: string;
   checkUpdatesOnStart: boolean;
   gameArguments: string[];
 };
@@ -24,7 +25,8 @@ export type LauncherState = {
 export type GameBuild = "missing" | "unreadable" | "supported" | "retailSafeDisc" | "unknown";
 export type GameCheck = { folder: string; build: GameBuild; sha256: string; message: string };
 
-export type PatchState = "notInstalled" | "installed" | "outdated" | "byHand";
+/** "newer": a patch from the patch's releases, newer than the one this launcher carries. */
+export type PatchState = "notInstalled" | "installed" | "outdated" | "newer" | "byHand";
 export type PatchStatus = {
   state: PatchState;
   installedVersion: string;
@@ -62,7 +64,9 @@ export type AddonManifest = {
 export type AddonInfo = { manifest: AddonManifest; path: string; enabled: boolean; problem: string; fileCount: number };
 
 export type Asset = { name: string; url: string; size: number };
+export type Product = "launcher" | "patch";
 export type UpdateInfo = {
+  product: Product;
   currentVersion: string;
   latestVersion: string;
   newer: boolean;
@@ -70,7 +74,8 @@ export type UpdateInfo = {
   notes: string;
   pageUrl: string;
   publishedAt: string;
-  installer: Asset | null;
+  /** The setup program (launcher) or zip (patch). */
+  download: Asset | null;
   sums: Asset | null;
 };
 
@@ -95,8 +100,11 @@ export const api = {
   deleteAddon: (id: string) => invoke<void>("delete_addon", { id }),
   setAddonEnabled: (folder: string, id: string, enabled: boolean) =>
     invoke<void>("set_addon_enabled", { folder, id, enabled }),
-  checkUpdates: (repo: string) => invoke<UpdateInfo>("check_updates", { repo }),
-  installUpdate: (info: UpdateInfo) => invoke<void>("install_update", { info }),
+  /** A patch is compared with what `folder` has installed, else with the bundled patch. */
+  checkUpdates: (product: Product, repo: string, folder: string | null) =>
+    invoke<UpdateInfo>("check_updates", { product, repo, folder }),
+  installLauncherUpdate: (info: UpdateInfo) => invoke<void>("install_launcher_update", { info }),
+  installPatchUpdate: (folder: string, info: UpdateInfo) => invoke<void>("install_patch_update", { folder, info }),
   onGameEvent: (handler: (e: GameEvent) => void): Promise<UnlistenFn> =>
     listen<GameEvent>("game", (event) => handler(event.payload)),
 };

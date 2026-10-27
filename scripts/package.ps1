@@ -5,7 +5,7 @@
 #   .\scripts\package.ps1                         # sync the payload from ..\BlackWhiteDecomp, test, build
 #   .\scripts\package.ps1 -Decomp <path> -BuildDecomp   # also run the decomp's build.ps1 first
 #   .\scripts\package.ps1 -SkipSync               # use payload\ as it is
-#   $env:BW_LAUNCHER_UPDATE_REPO = "owner/name"   # check another repository than konstantine-v/black-and-white-patch-tool
+#   $env:BW_LAUNCHER_UPDATE_REPO / $env:BW_PATCH_UPDATE_REPO = "owner/name"   # other default update repositories
 param(
     [string] $Decomp = (Join-Path $PSScriptRoot "..\..\BlackWhiteDecomp"),
     [switch] $BuildDecomp,
