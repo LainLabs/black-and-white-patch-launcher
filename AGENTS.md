@@ -19,8 +19,8 @@ for `/quiet` installs, and both write the **same manifest**, so either can updat
 Stack: **Tauri 2** (Rust backend, `src-tauri/`) + **React 19 / TypeScript / Vite+ / Tailwind 4** (`src/`), TanStack
 Query for backend reads, Zustand for UI state. Tauri 3 is still alpha: stay on Tauri 2 until it is stable.
 **Vite+** (the `vite-plus` package, command `vp`) is the whole web toolchain, set up in `vite.config.ts`: Vite for the
-dev server and the build Tauri embeds, Vitest for tests, Oxlint for lint and, through tsgolint, the type check (there
-is no `tsc` step).
+dev server and the build Tauri embeds, Vitest for tests, Oxfmt for formatting, Oxlint for lint and, through tsgolint,
+the type check (there is no `tsc` step).
 
 ## The decomp is the source of truth
 
@@ -79,15 +79,15 @@ npm install
 npm run tauri dev                   # the app with hot reload (real backend)
 npm run dev                         # UI only in a browser at http://localhost:1420 with the fake backend
                                     #   ?mock=fresh shows the first-run wizard
-npx vp check; npx vp test           # UI checks: lint + type check, then the tests (npm run build runs vp check too)
+npx vp check; npx vp test           # UI checks: format, lint, types, then the tests (npm run build runs vp check too)
+npx vp check --fix                  # formats (Oxfmt) and applies lint fixes
 cd src-tauri; cargo test            # backend tests (temp folders only; never touch a real game folder)
 .\scripts\package.ps1               # release files in dist\
 ```
 
 `vp` is the project's own copy (`npx vp`, or `vp` from npm scripts); a global Vite+ install works too but is not needed.
 `vp <name>` is a built-in command (`vp dev`, `vp build`, `vp test`, `vp check`); `vp run <name>` runs a package.json
-script. `vp check` does not format (`check.fmt: false`): the code is formatted by hand in a denser style than Oxfmt
-keeps. `npx vp fmt <file>` formats one file at the project's width when that helps.
+script. Oxfmt formats TypeScript, CSS and JSON at 120 columns; Markdown is formatted by hand (its tables stay narrow).
 
 Toolchain: Rust stable MSVC (`rustup`), Visual Studio 2022 C++ build tools (x64 for the launcher; the decomp needs
 x86/Win32), Node 22.18+, 24.11+ or 26+ (what Vite+ supports). Without `payload\` the launcher still builds, for UI work,
@@ -113,7 +113,7 @@ and says it has nothing to install.
   documents itself. Registry values in `BWSetup` are DWORDs; an existing REG_SZ keeps its type.
 - **Slow work off the UI thread:** commands that hash, copy or use the network are `async` and use `blocking(...)`.
 - Match the surrounding style: short doc comments that say *why*, error messages a player can act on (with the path),
-  British spelling in UI text as in the decomp's docs.
+  British spelling in UI text as in the decomp's docs. Layout is Oxfmt's: run `npx vp check --fix` before committing.
 
 ## Common changes
 
@@ -171,8 +171,9 @@ before trying it in the app.
 **A new Vite+ version.** Three entries in `package.json` move together: `vite-plus`, the `vite` devDependency and the
 `vite` override (both `npm:@voidzero-dev/vite-plus-core@<same version>`; the alias lets the React and Tailwind plugins
 find Vite). Let the new version's migrator change them, then check and commit the diff:
-`npx --package=vite-plus@<v> vp migrate --no-interactive`, `npm install`, `npx vp check`, `npx vp test`,
-`npm run build`. `npx vp toolchain` shows the Vite, Vitest and Oxlint versions a release bundles. In code, import
+`npx --package=vite-plus@<v> vp migrate --no-interactive`, `npm install`, `npx vp check --fix` (a newer Oxfmt can
+lay code out differently: commit that separately), `npx vp test`, `npm run build`. `npx vp toolchain` shows the Vite,
+Vitest, Oxlint and Oxfmt versions a release bundles. In code, import
 config helpers from `vite-plus` and test functions from `vite-plus/test`, never `vite` or `vitest` (lint rejects them).
 
 ## Verifying a change

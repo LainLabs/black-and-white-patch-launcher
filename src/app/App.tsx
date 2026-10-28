@@ -53,7 +53,11 @@ export function App() {
   const updateAvailable = !!launcherUpdate.data?.newer || !!patchUpdate.data?.newer;
 
   if (state.isLoading || info.isLoading) {
-    return <div className="grid h-full place-items-center"><Mark className="size-16 animate-pulse" /></div>;
+    return (
+      <div className="grid h-full place-items-center">
+        <Mark className="size-16 animate-pulse" />
+      </div>
+    );
   }
   if (!state.data?.gameFolder || wizard) {
     return <Wizard />;

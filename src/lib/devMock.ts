@@ -19,37 +19,81 @@ export function installDevMock() {
     gameArguments: [],
   };
   const ini = [
-    ["Fixes", "DirectXVersionReport", "1"], ["Fixes", "DiscFromInstallFolder", "1"], ["Fixes", "ColorDepth32", "1"],
-    ["Fixes", "DisplayModeFallback", "1"], ["Fixes", "CloseRequestsQuit", "1"], ["Fixes", "MinimisedWait", "1"],
-    ["Fixes", "ShutdownTimeoutSeconds", "60"], ["Fixes", "DpiAware", "1"], ["Fixes", "ExecutableSelfModifyingCode", "1"],
-    ["Fixes", "MaxReportedPhysicalMemoryMB", "512"], ["Fixes", "MaxReportedVideoMemoryMB", "1024"],
-    ["Display", "WindowMode", "0"], ["Display", "KeepAspectRatio", "1"], ["Display", "Renderer", "1"],
-    ["Display", "VSync", "1"], ["Display", "Anisotropy", "0"], ["Display", "AntiAliasing", "0"],
-    ["Display", "FullPrecisionTextures", "1"], ["Textures", "Dump", "0"], ["Textures", "Replace", "1"],
-    ["Hooks", "Disabled", ""], ["Diagnostics", "TraceExit", "1"], ["Diagnostics", "TraceExceptions", "1"],
-    ["Diagnostics", "ForwardDebugOutput", "0"], ["Diagnostics", "TraceDirectX", "0"], ["Diagnostics", "ScreenshotKey", "0"],
+    ["Fixes", "DirectXVersionReport", "1"],
+    ["Fixes", "DiscFromInstallFolder", "1"],
+    ["Fixes", "ColorDepth32", "1"],
+    ["Fixes", "DisplayModeFallback", "1"],
+    ["Fixes", "CloseRequestsQuit", "1"],
+    ["Fixes", "MinimisedWait", "1"],
+    ["Fixes", "ShutdownTimeoutSeconds", "60"],
+    ["Fixes", "DpiAware", "1"],
+    ["Fixes", "ExecutableSelfModifyingCode", "1"],
+    ["Fixes", "MaxReportedPhysicalMemoryMB", "512"],
+    ["Fixes", "MaxReportedVideoMemoryMB", "1024"],
+    ["Display", "WindowMode", "0"],
+    ["Display", "KeepAspectRatio", "1"],
+    ["Display", "Renderer", "1"],
+    ["Display", "VSync", "1"],
+    ["Display", "Anisotropy", "0"],
+    ["Display", "AntiAliasing", "0"],
+    ["Display", "FullPrecisionTextures", "1"],
+    ["Textures", "Dump", "0"],
+    ["Textures", "Replace", "1"],
+    ["Hooks", "Disabled", ""],
+    ["Diagnostics", "TraceExit", "1"],
+    ["Diagnostics", "TraceExceptions", "1"],
+    ["Diagnostics", "ForwardDebugOutput", "0"],
+    ["Diagnostics", "TraceDirectX", "0"],
+    ["Diagnostics", "ScreenshotKey", "0"],
     ["Log", "Debug", "0"],
   ].map(([section, key, value]) => ({ section, key, value }));
   const settings: SettingsSnapshot = {
     ini: structuredClone(ini),
     iniExists: true,
     defaults: ini,
-    game: { ScreenW: 2560, ScreenH: 1440, detailidx: 4, maxdetailidx: 5, AudioMusicMasterVolume: 127, AudioSampleMasterVolume: 100 },
+    game: {
+      ScreenW: 2560,
+      ScreenH: 1440,
+      detailidx: 4,
+      maxdetailidx: 5,
+      AudioMusicMasterVolume: 127,
+      AudioSampleMasterVolume: 100,
+    },
   };
   const addons: AddonInfo[] = [
     {
       manifest: {
-        id: "hd-skies", name: "HD Skies", version: "1.2.0", author: "Example author", kind: "texture-pack", homepage: "",
-        description: "Sharper sky and cloud textures for the Direct3D 9 renderer.", requires: { decomp: ">=0.10.0" }, settings: [],
+        id: "hd-skies",
+        name: "HD Skies",
+        version: "1.2.0",
+        author: "Example author",
+        kind: "texture-pack",
+        homepage: "",
+        description: "Sharper sky and cloud textures for the Direct3D 9 renderer.",
+        requires: { decomp: ">=0.10.0" },
+        settings: [],
       },
-      path: "C:\\Users\\you\\AppData\\Roaming\\BWLauncher\\addons\\hd-skies", enabled: true, problem: "", fileCount: 42,
+      path: "C:\\Users\\you\\AppData\\Roaming\\BWLauncher\\addons\\hd-skies",
+      enabled: true,
+      problem: "",
+      fileCount: 42,
     },
     {
       manifest: {
-        id: "crisp", name: "Crisp preset", version: "1.0.0", author: "", kind: "preset", homepage: "",
-        description: "8× anti-aliasing and 16× anisotropic filtering.", requires: {}, settings: [],
+        id: "crisp",
+        name: "Crisp preset",
+        version: "1.0.0",
+        author: "",
+        kind: "preset",
+        homepage: "",
+        description: "8× anti-aliasing and 16× anisotropic filtering.",
+        requires: {},
+        settings: [],
       },
-      path: "C:\\Users\\you\\AppData\\Roaming\\BWLauncher\\addons\\crisp", enabled: false, problem: "", fileCount: 2,
+      path: "C:\\Users\\you\\AppData\\Roaming\\BWLauncher\\addons\\crisp",
+      enabled: false,
+      problem: "",
+      fileCount: 2,
     },
   ];
 
@@ -58,7 +102,15 @@ export function installDevMock() {
     const a = (args ?? {}) as Record<string, unknown>;
     switch (cmd) {
       case "app_info":
-        return { launcherVersion: "0.1.4", decompVersion: "0.11.1", decompCommit: "aa6fbcb", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
+        return {
+          launcherVersion: "0.1.4",
+          decompVersion: "0.11.1",
+          decompCommit: "aa6fbcb",
+          hasPayload: true,
+          stateDir: "%APPDATA%\\BWLauncher",
+          addonsDir: "%APPDATA%\\BWLauncher\\addons",
+          elevated: false,
+        };
       case "get_state":
         return state;
       case "set_state":
@@ -67,9 +119,21 @@ export function installDevMock() {
       case "detect_game_folder":
         return folder;
       case "check_game":
-        return { folder: a.folder, build: "supported", sha256: "86a30b08ab2ea8a240403d37f8f0303cf65aa5cde8e7f673049ab01654ccf755", message: "" };
+        return {
+          folder: a.folder,
+          build: "supported",
+          sha256: "86a30b08ab2ea8a240403d37f8f0303cf65aa5cde8e7f673049ab01654ccf755",
+          message: "",
+        };
       case "patch_status":
-        return { state: fresh ? "notInstalled" : "installed", installedVersion: fresh ? "" : "0.11.0", bundledVersion: "0.11.0", fromSetup: false, needsRights: false, running: false };
+        return {
+          state: fresh ? "notInstalled" : "installed",
+          installedVersion: fresh ? "" : "0.11.0",
+          bundledVersion: "0.11.0",
+          fromSetup: false,
+          needsRights: false,
+          running: false,
+        };
       case "install_patch":
         state = { ...state, gameFolder: a.folder as string };
         return null;
@@ -78,14 +142,46 @@ export function installDevMock() {
       case "write_settings":
         return null;
       case "display_modes":
-        return { modes: [[2560, 1440], [1920, 1080], [1600, 900], [1280, 720], [1024, 768], [800, 600]].map(([width, height]) => ({ width, height })), current: { width: 2560, height: 1440 } };
+        return {
+          modes: [
+            [2560, 1440],
+            [1920, 1080],
+            [1600, 900],
+            [1280, 720],
+            [1024, 768],
+            [800, 600],
+          ].map(([width, height]) => ({ width, height })),
+          current: { width: 2560, height: 1440 },
+        };
       case "list_addons":
         return addons;
       case "check_updates": {
         const asset = (name: string) => ({ name, url: `https://github.com/example/${name}`, size: 1 });
         return a.product === "launcher"
-          ? { product: "launcher", currentVersion: "0.1.4", latestVersion: "0.1.4", newer: false, name: "Launcher 0.1.4", notes: "", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWLauncher-0.1.4-Setup.exe"), sums: asset("BWLauncher-0.1.4-SHA256SUMS.txt") }
-          : { product: "patch", currentVersion: "0.11.0", latestVersion: "0.11.1", newer: true, name: "v0.11.1", notes: "- Example release notes", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWDecomp-0.11.1.zip"), sums: asset("BWDecomp-0.11.1-SHA256SUMS.txt") };
+          ? {
+              product: "launcher",
+              currentVersion: "0.1.4",
+              latestVersion: "0.1.4",
+              newer: false,
+              name: "Launcher 0.1.4",
+              notes: "",
+              pageUrl: "https://github.com/example",
+              publishedAt: "",
+              download: asset("BWLauncher-0.1.4-Setup.exe"),
+              sums: asset("BWLauncher-0.1.4-SHA256SUMS.txt"),
+            }
+          : {
+              product: "patch",
+              currentVersion: "0.11.0",
+              latestVersion: "0.11.1",
+              newer: true,
+              name: "v0.11.1",
+              notes: "- Example release notes",
+              pageUrl: "https://github.com/example",
+              publishedAt: "",
+              download: asset("BWDecomp-0.11.1.zip"),
+              sums: asset("BWDecomp-0.11.1-SHA256SUMS.txt"),
+            };
       }
       case "install_patch_update":
         return null;

@@ -94,7 +94,9 @@ export function Updates() {
             patches install from here without waiting for a new launcher.
           </p>
         </div>
-        <Button icon={<RefreshCw className="size-4" />} onClick={checkNow} busy={checking}>Check now</Button>
+        <Button icon={<RefreshCw className="size-4" />} onClick={checkNow} busy={checking}>
+          Check now
+        </Button>
       </header>
 
       {error && <Notice kind="error">{error}</Notice>}
@@ -121,30 +123,77 @@ export function Updates() {
         }
         busy={busy === "patch"}
         onInstall={installPatch}
-        disabledReason={!folder ? "Set up the game folder first." : patch.data?.running ? "Close Black & White first." : ""}
+        disabledReason={
+          !folder ? "Set up the game folder first." : patch.data?.running ? "Close Black & White first." : ""
+        }
       />
 
       {draft && (
-        <Card title="Launcher options" actions={<Button variant="primary" size="sm" icon={<Save className="size-4" />} disabled={!dirty} busy={saveState.isPending} onClick={save}>Save</Button>}>
-          <Row label="Launcher releases" help="GitHub repository checked for new launchers, as owner/name. Leave it empty for the default.">
-            <input className={`${inputClass} w-80`} value={draft.launcherRepo} placeholder="owner/name" spellCheck={false}
-              onChange={(e) => setDraft({ ...draft, launcherRepo: e.target.value.trim() })} />
+        <Card
+          title="Launcher options"
+          actions={
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Save className="size-4" />}
+              disabled={!dirty}
+              busy={saveState.isPending}
+              onClick={save}
+            >
+              Save
+            </Button>
+          }
+        >
+          <Row
+            label="Launcher releases"
+            help="GitHub repository checked for new launchers, as owner/name. Leave it empty for the default."
+          >
+            <input
+              className={`${inputClass} w-80`}
+              value={draft.launcherRepo}
+              placeholder="owner/name"
+              spellCheck={false}
+              onChange={(e) => setDraft({ ...draft, launcherRepo: e.target.value.trim() })}
+            />
           </Row>
-          <Row label="Patch releases" help="GitHub repository checked for new patches, as owner/name. Leave it empty for the default.">
-            <input className={`${inputClass} w-80`} value={draft.patchRepo} placeholder="owner/name" spellCheck={false}
-              onChange={(e) => setDraft({ ...draft, patchRepo: e.target.value.trim() })} />
+          <Row
+            label="Patch releases"
+            help="GitHub repository checked for new patches, as owner/name. Leave it empty for the default."
+          >
+            <input
+              className={`${inputClass} w-80`}
+              value={draft.patchRepo}
+              placeholder="owner/name"
+              spellCheck={false}
+              onChange={(e) => setDraft({ ...draft, patchRepo: e.target.value.trim() })}
+            />
           </Row>
           <Row label="Check for updates on start">
-            <Switch label="Check for updates on start" checked={draft.checkUpdatesOnStart} onChange={(v) => setDraft({ ...draft, checkUpdatesOnStart: v })} />
+            <Switch
+              label="Check for updates on start"
+              checked={draft.checkUpdatesOnStart}
+              onChange={(v) => setDraft({ ...draft, checkUpdatesOnStart: v })}
+            />
           </Row>
           <Row label="When the game starts" help="What the launcher window does while you play.">
-            <Segmented label="When the game starts" value={draft.onPlay}
-              options={[{ value: "keep", label: "Stay open" }, { value: "minimize", label: "Minimise" }, { value: "close", label: "Close" }]}
-              onChange={(v) => setDraft({ ...draft, onPlay: v as LauncherState["onPlay"] })} />
+            <Segmented
+              label="When the game starts"
+              value={draft.onPlay}
+              options={[
+                { value: "keep", label: "Stay open" },
+                { value: "minimize", label: "Minimise" },
+                { value: "close", label: "Close" },
+              ]}
+              onChange={(v) => setDraft({ ...draft, onPlay: v as LauncherState["onPlay"] })}
+            />
           </Row>
           <Row label="Game arguments" help="Extra command-line arguments passed to runblack.exe, separated by spaces.">
-            <input className={`${inputClass} w-72 font-mono`} value={draft.gameArguments.join(" ")} spellCheck={false}
-              onChange={(e) => setDraft({ ...draft, gameArguments: e.target.value.split(" ").filter(Boolean) })} />
+            <input
+              className={`${inputClass} w-72 font-mono`}
+              value={draft.gameArguments.join(" ")}
+              spellCheck={false}
+              onChange={(e) => setDraft({ ...draft, gameArguments: e.target.value.split(" ").filter(Boolean) })}
+            />
           </Row>
         </Card>
       )}
@@ -152,7 +201,15 @@ export function Updates() {
   );
 }
 
-function UpdateCard({ title, repo, query, versions, busy, onInstall, disabledReason = "" }: {
+function UpdateCard({
+  title,
+  repo,
+  query,
+  versions,
+  busy,
+  onInstall,
+  disabledReason = "",
+}: {
   title: string;
   repo: string;
   query: UseQueryResult<UpdateInfo>;
@@ -168,35 +225,52 @@ function UpdateCard({ title, repo, query, versions, busy, onInstall, disabledRea
       <div className="flex flex-wrap items-center gap-2">
         {versions}
         {repo && (
-          <button className="ml-auto text-xs text-ink-500 underline-offset-2 hover:text-ivory-300 hover:underline"
-            onClick={() => openUrl(`https://github.com/${repo}/releases`)}>
+          <button
+            className="ml-auto text-xs text-ink-500 underline-offset-2 hover:text-ivory-300 hover:underline"
+            onClick={() => openUrl(`https://github.com/${repo}/releases`)}
+          >
             {repo}
           </button>
         )}
       </div>
       {query.isFetching && !update && <p className="mt-4 text-sm text-ivory-400">Checking…</p>}
-      {query.error && !query.isFetching && <div className="mt-4"><Notice kind="warning">{errorText(query.error)}</Notice></div>}
+      {query.error && !query.isFetching && (
+        <div className="mt-4">
+          <Notice kind="warning">{errorText(query.error)}</Notice>
+        </div>
+      )}
       {!update && !query.error && !query.isFetching && (
         <p className="mt-4 text-sm text-ivory-400">Not checked yet. Use Check now.</p>
       )}
       {update && (
         <div className="mt-4 space-y-3">
           {update.newer ? (
-            <Notice kind="success" title={`Version ${update.latestVersion} is available`}>{update.name}</Notice>
+            <Notice kind="success" title={`Version ${update.latestVersion} is available`}>
+              {update.name}
+            </Notice>
           ) : (
             <Notice title="Up to date">Latest release: {update.latestVersion}.</Notice>
           )}
           {update.newer && update.notes && (
-            <pre className="max-h-56 overflow-auto whitespace-pre-wrap rounded-lg bg-ink-950 p-3 text-xs text-ivory-300">{update.notes.trim()}</pre>
+            <pre className="max-h-56 overflow-auto whitespace-pre-wrap rounded-lg bg-ink-950 p-3 text-xs text-ivory-300">
+              {update.notes.trim()}
+            </pre>
           )}
           <div className="flex gap-2">
             {update.newer && (
-              <Button variant="primary" icon={<Download className="size-4" />} onClick={() => onInstall(update)} busy={busy}
-                disabled={!complete || !!disabledReason}>
+              <Button
+                variant="primary"
+                icon={<Download className="size-4" />}
+                onClick={() => onInstall(update)}
+                busy={busy}
+                disabled={!complete || !!disabledReason}
+              >
                 Download and install
               </Button>
             )}
-            <Button variant="ghost" icon={<ExternalLink className="size-4" />} onClick={() => openUrl(update.pageUrl)}>Release page</Button>
+            <Button variant="ghost" icon={<ExternalLink className="size-4" />} onClick={() => openUrl(update.pageUrl)}>
+              Release page
+            </Button>
           </div>
           {update.newer && disabledReason && <p className="text-xs text-ivory-400">{disabledReason}</p>}
           {update.newer && !complete && (

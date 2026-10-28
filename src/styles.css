@@ -67,13 +67,22 @@ input[type="range"] {
 }
 
 @keyframes glow {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.04); }
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
 }
 .animate-glow {
   animation: glow 6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-glow { animation: none; }
+  .animate-glow {
+    animation: none;
+  }
 }

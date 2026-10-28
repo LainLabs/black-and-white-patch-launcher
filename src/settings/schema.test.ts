@@ -32,7 +32,10 @@ describe("settings schema", () => {
 
   it("gives choices options that include the fallback", () => {
     for (const f of FIELDS.filter((f) => f.type === "choice")) {
-      expect(f.options?.map((o) => o.value), f.id).toContain(f.fallback);
+      expect(
+        f.options?.map((o) => o.value),
+        f.id,
+      ).toContain(f.fallback);
     }
   });
 
@@ -46,7 +49,10 @@ describe("settings schema", () => {
     }
     // And nothing in the schema that the decomp no longer reads.
     for (const f of FIELDS.filter((f) => f.store === "ini")) {
-      expect(values.some((v) => v.section === f.section && v.key === f.key), `${f.id} is not in BWDecomp.ini`).toBe(true);
+      expect(
+        values.some((v) => v.section === f.section && v.key === f.key),
+        `${f.id} is not in BWDecomp.ini`,
+      ).toBe(true);
     }
   });
 });

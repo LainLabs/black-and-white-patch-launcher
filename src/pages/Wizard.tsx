@@ -46,7 +46,9 @@ export function Wizard() {
             <p className="text-sm text-ivory-400">Set up the patch for your copy of the game</p>
           </div>
           {returning && (
-            <Button variant="ghost" className="ml-auto" onClick={() => setWizard(false)}>Cancel</Button>
+            <Button variant="ghost" className="ml-auto" onClick={() => setWizard(false)}>
+              Cancel
+            </Button>
           )}
         </header>
 
@@ -61,7 +63,9 @@ export function Wizard() {
 
         <div className="flex-1">
           {step === 0 && <Welcome onNext={() => setStep(1)} />}
-          {step === 1 && <Locate folder={folder} setFolder={setFolder} onBack={() => setStep(0)} onNext={() => setStep(2)} />}
+          {step === 1 && (
+            <Locate folder={folder} setFolder={setFolder} onBack={() => setStep(0)} onNext={() => setStep(2)} />
+          )}
           {step === 2 && <Install folder={folder} onBack={() => setStep(1)} onNext={() => setStep(3)} />}
           {step === 3 && <QuickSetup folder={folder} onNext={() => setStep(4)} />}
           {step === 4 && <Ready folder={folder} onDone={finish} />}
@@ -71,12 +75,28 @@ export function Wizard() {
   );
 }
 
-function Nav({ onBack, onNext, nextLabel = "Continue", nextDisabled, busy }: {
-  onBack?: () => void; onNext: () => void; nextLabel?: string; nextDisabled?: boolean; busy?: boolean;
+function Nav({
+  onBack,
+  onNext,
+  nextLabel = "Continue",
+  nextDisabled,
+  busy,
+}: {
+  onBack?: () => void;
+  onNext: () => void;
+  nextLabel?: string;
+  nextDisabled?: boolean;
+  busy?: boolean;
 }) {
   return (
     <div className="mt-6 flex justify-between">
-      {onBack ? <Button variant="ghost" icon={<ArrowLeft className="size-4" />} onClick={onBack}>Back</Button> : <span />}
+      {onBack ? (
+        <Button variant="ghost" icon={<ArrowLeft className="size-4" />} onClick={onBack}>
+          Back
+        </Button>
+      ) : (
+        <span />
+      )}
       <Button variant="primary" onClick={onNext} disabled={nextDisabled} busy={busy}>
         {nextLabel} <ArrowRight className="size-4" />
       </Button>
@@ -102,7 +122,10 @@ function Welcome({ onNext }: { onNext: () => void }) {
           "Changes none of the game's own files, so the game can always be started as it was.",
           "Needs Black & White 1.00 (English) with the unprotected runblack.exe from the disc's crack folder.",
         ].map((t) => (
-          <li key={t} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-good-400" />{t}</li>
+          <li key={t} className="flex gap-2">
+            <Check className="mt-0.5 size-4 shrink-0 text-good-400" />
+            {t}
+          </li>
         ))}
       </ul>
       {!info.data?.hasPayload && (
@@ -117,8 +140,16 @@ function Welcome({ onNext }: { onNext: () => void }) {
   );
 }
 
-function Locate({ folder, setFolder, onBack, onNext }: {
-  folder: string; setFolder: (f: string) => void; onBack: () => void; onNext: () => void;
+function Locate({
+  folder,
+  setFolder,
+  onBack,
+  onNext,
+}: {
+  folder: string;
+  setFolder: (f: string) => void;
+  onBack: () => void;
+  onNext: () => void;
 }) {
   const [typed, setTyped] = useState(folder);
   const [detecting, setDetecting] = useState(false);
@@ -149,7 +180,11 @@ function Locate({ folder, setFolder, onBack, onNext }: {
   }, [typed, setFolder]);
 
   const browse = async () => {
-    const picked = await open({ directory: true, title: "The Black & White folder (with runblack.exe)", defaultPath: folder || undefined });
+    const picked = await open({
+      directory: true,
+      title: "The Black & White folder (with runblack.exe)",
+      defaultPath: folder || undefined,
+    });
     if (typeof picked === "string") {
       setTyped(picked);
       setFolder(picked);
@@ -163,22 +198,43 @@ function Locate({ folder, setFolder, onBack, onNext }: {
       <h2 className="font-display text-xl text-ivory-50">Where is Black &amp; White installed?</h2>
       <p className="mt-2 text-sm text-ivory-400">The folder that contains runblack.exe.</p>
       <div className="mt-4 flex gap-2">
-        <input className={cx(inputClass, "flex-1")} value={typed} placeholder="e.g. C:\Program Files (x86)\Lionhead Studios Ltd\Black & White"
-          onChange={(e) => setTyped(e.target.value)} spellCheck={false} aria-label="Game folder" />
-        <Button icon={<FolderOpen className="size-4" />} onClick={browse}>Browse</Button>
-        <Button variant="ghost" icon={<Search className="size-4" />} onClick={detect} busy={detecting}>Find</Button>
+        <input
+          className={cx(inputClass, "flex-1")}
+          value={typed}
+          placeholder="e.g. C:\Program Files (x86)\Lionhead Studios Ltd\Black & White"
+          onChange={(e) => setTyped(e.target.value)}
+          spellCheck={false}
+          aria-label="Game folder"
+        />
+        <Button icon={<FolderOpen className="size-4" />} onClick={browse}>
+          Browse
+        </Button>
+        <Button variant="ghost" icon={<Search className="size-4" />} onClick={detect} busy={detecting}>
+          Find
+        </Button>
       </div>
       <div className="mt-4 min-h-16">
         {!folder && !detecting && <Notice>Could not find the game automatically. Choose its folder.</Notice>}
         {folder && check.isFetching && <Notice>Checking runblack.exe…</Notice>}
         {folder && check.error && <Notice kind="error">{errorText(check.error)}</Notice>}
-        {check.data && !check.isFetching && (
-          build === "supported" ? (
-            <Notice kind="success" title="Supported game found">Black &amp; White 1.00, unprotected runblack.exe.</Notice>
+        {check.data &&
+          !check.isFetching &&
+          (build === "supported" ? (
+            <Notice kind="success" title="Supported game found">
+              Black &amp; White 1.00, unprotected runblack.exe.
+            </Notice>
           ) : (
             <div className="space-y-3">
-              <Notice kind={build === "missing" ? "info" : "warning"}
-                title={build === "retailSafeDisc" ? "SafeDisc-protected runblack.exe" : build === "unknown" ? "Unsupported runblack.exe" : undefined}>
+              <Notice
+                kind={build === "missing" ? "info" : "warning"}
+                title={
+                  build === "retailSafeDisc"
+                    ? "SafeDisc-protected runblack.exe"
+                    : build === "unknown"
+                      ? "Unsupported runblack.exe"
+                      : undefined
+                }
+              >
                 {check.data.message}
               </Notice>
               {(build === "unknown" || build === "retailSafeDisc") && (
@@ -188,8 +244,7 @@ function Locate({ folder, setFolder, onBack, onNext }: {
                 </label>
               )}
             </div>
-          )
-        )}
+          ))}
       </div>
       <Nav onBack={onBack} onNext={onNext} nextDisabled={!canContinue} />
     </Card>
@@ -223,7 +278,9 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
   const newer = s?.state === "newer";
   return (
     <Card>
-      <h2 className="font-display text-xl text-ivory-50">{upToDate || newer ? "Already installed" : "Install the patch"}</h2>
+      <h2 className="font-display text-xl text-ivory-50">
+        {upToDate || newer ? "Already installed" : "Install the patch"}
+      </h2>
       <p className="mt-2 break-all text-sm text-ivory-400">{folder}</p>
       <div className="mt-4 space-y-3">
         {s?.state === "notInstalled" && <Notice>Nothing is installed in this folder yet.</Notice>}
@@ -232,7 +289,11 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
             It will be updated to {s.bundledVersion}. Your BWDecomp.ini is kept.
           </Notice>
         )}
-        {upToDate && <Notice kind="success" title={`Version ${s.installedVersion} is installed`}>You can reinstall it to repair missing files.</Notice>}
+        {upToDate && (
+          <Notice kind="success" title={`Version ${s.installedVersion} is installed`}>
+            You can reinstall it to repair missing files.
+          </Notice>
+        )}
         {newer && (
           <Notice kind="success" title={`Version ${s.installedVersion} is installed`}>
             It is newer than the patch in this launcher ({s.bundledVersion}), so it is kept. Updates has newer ones.
@@ -240,7 +301,8 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
         )}
         {s?.state === "byHand" && (
           <Notice title="Files copied by hand were found">
-            BWDecomp.dll is there without an installation record. Installing replaces the program files and keeps your BWDecomp.ini.
+            BWDecomp.dll is there without an installation record. Installing replaces the program files and keeps your
+            BWDecomp.ini.
           </Notice>
         )}
         {s?.fromSetup && (
@@ -250,21 +312,35 @@ function Install({ folder, onBack, onNext }: { folder: string; onBack: () => voi
         )}
         {s?.needsRights && (
           <Notice kind="warning" title="Administrator rights needed">
-            This folder is protected (for example below Program Files). Windows will ask for permission to copy the files.
+            This folder is protected (for example below Program Files). Windows will ask for permission to copy the
+            files.
           </Notice>
         )}
         {s?.running && <Notice kind="error">Close Black &amp; White first: it is running from this folder.</Notice>}
-        {error && <Notice kind="error" title="Installation failed">{error}</Notice>}
+        {error && (
+          <Notice kind="error" title="Installation failed">
+            {error}
+          </Notice>
+        )}
       </div>
       <div className="mt-6 flex justify-between">
-        <Button variant="ghost" icon={<ArrowLeft className="size-4" />} onClick={onBack}>Back</Button>
+        <Button variant="ghost" icon={<ArrowLeft className="size-4" />} onClick={onBack}>
+          Back
+        </Button>
         {newer ? (
-          <Button variant="primary" onClick={onNext}>Continue <ArrowRight className="size-4" /></Button>
+          <Button variant="primary" onClick={onNext}>
+            Continue <ArrowRight className="size-4" />
+          </Button>
         ) : (
           <div className="flex gap-2">
             {upToDate && <Button onClick={onNext}>Skip</Button>}
-            <Button variant="primary" onClick={install} busy={busy} disabled={!s || s.running}
-              icon={s?.needsRights ? <ShieldAlert className="size-4" /> : undefined}>
+            <Button
+              variant="primary"
+              onClick={install}
+              busy={busy}
+              disabled={!s || s.running}
+              icon={s?.needsRights ? <ShieldAlert className="size-4" /> : undefined}
+            >
               {upToDate ? "Reinstall" : s?.state === "outdated" ? "Update" : "Install"}
             </Button>
           </div>
@@ -282,17 +358,20 @@ function QuickSetup({ folder, onNext }: { folder: string; onNext: () => void }) 
   const original = useMemo(() => (snapshot ? toValues(snapshot) : {}), [snapshot]);
 
   useEffect(() => {
-    void Promise.all([api.readSettings(folder), api.displayModes()]).then(([s, modes]) => {
-      setSnapshot(s);
-      const v = toValues(s);
-      // No resolution yet: suggest the display's own (the game would use 800×600).
-      if (!v["game.ScreenW"] && modes.current) {
-        v["game.ScreenW"] = String(modes.current.width);
-        v["game.ScreenH"] = String(modes.current.height);
-        v["game.ScreenD"] = "32";
-      }
-      setValues(v);
-    }, (e) => setError(errorText(e)));
+    void Promise.all([api.readSettings(folder), api.displayModes()]).then(
+      ([s, modes]) => {
+        setSnapshot(s);
+        const v = toValues(s);
+        // No resolution yet: suggest the display's own (the game would use 800×600).
+        if (!v["game.ScreenW"] && modes.current) {
+          v["game.ScreenW"] = String(modes.current.width);
+          v["game.ScreenH"] = String(modes.current.height);
+          v["game.ScreenD"] = "32";
+        }
+        setValues(v);
+      },
+      (e) => setError(errorText(e)),
+    );
   }, [folder]);
 
   const save = async () => {
@@ -322,7 +401,11 @@ function QuickSetup({ folder, onNext }: { folder: string; onNext: () => void }) 
           ))}
         </div>
       )}
-      {error && <div className="mt-4"><Notice kind="error">{error}</Notice></div>}
+      {error && (
+        <div className="mt-4">
+          <Notice kind="error">{error}</Notice>
+        </div>
+      )}
       <Nav onNext={save} nextLabel="Save" busy={busy} nextDisabled={!snapshot} />
     </Card>
   );
@@ -347,10 +430,16 @@ function Ready({ folder, onDone }: { folder: string; onDone: () => void }) {
         <p className="mt-2 max-w-md text-sm text-ivory-400">
           Start the game from here at any time. Settings, addons and updates are in the launcher.
         </p>
-        {error && <div className="mt-4 w-full"><Notice kind="error">{error}</Notice></div>}
+        {error && (
+          <div className="mt-4 w-full">
+            <Notice kind="error">{error}</Notice>
+          </div>
+        )}
         <div className="mt-6 flex gap-3">
           <Button onClick={onDone}>Open the launcher</Button>
-          <Button variant="primary" size="lg" icon={<Play className="size-5" />} onClick={play}>Play</Button>
+          <Button variant="primary" size="lg" icon={<Play className="size-5" />} onClick={play}>
+            Play
+          </Button>
         </div>
       </div>
     </Card>

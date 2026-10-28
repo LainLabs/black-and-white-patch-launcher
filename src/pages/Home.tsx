@@ -50,7 +50,8 @@ export function Home() {
 
   const p = patch.data;
   const supported = check.data?.build === "supported";
-  const installed = p && (p.state === "installed" || p.state === "newer" || p.state === "outdated" || p.state === "byHand");
+  const installed =
+    p && (p.state === "installed" || p.state === "newer" || p.state === "outdated" || p.state === "byHand");
   const running = run !== "idle" || p?.running;
   const open = (path: string, create = false) => api.openFolder(path, create).catch((e) => setError(errorText(e)));
 
@@ -60,8 +61,14 @@ export function Home() {
       <div className="relative flex min-h-full flex-col px-10 pb-8 pt-16">
         <div className="max-w-xl">
           <div className="mb-3 flex flex-wrap gap-2">
-            {(p?.state === "installed" || p?.state === "newer") && <Badge tone="good">Patch {p.installedVersion}</Badge>}
-            {p?.state === "outdated" && <Badge tone="warn">Update available: {p.installedVersion} → {p.bundledVersion}</Badge>}
+            {(p?.state === "installed" || p?.state === "newer") && (
+              <Badge tone="good">Patch {p.installedVersion}</Badge>
+            )}
+            {p?.state === "outdated" && (
+              <Badge tone="warn">
+                Update available: {p.installedVersion} → {p.bundledVersion}
+              </Badge>
+            )}
             {p?.state === "byHand" && <Badge tone="warn">Installed by hand</Badge>}
             {p?.state === "notInstalled" && <Badge tone="bad">Not installed</Badge>}
             {check.data && !supported && <Badge tone="bad">Unsupported runblack.exe</Badge>}
@@ -71,8 +78,14 @@ export function Home() {
             Lionhead's god game on current Windows, with the patch's fixes and its Direct3D&nbsp;9 renderer.
           </p>
           <div className="mt-8 flex items-center gap-3">
-            <Button variant="primary" size="lg" icon={<Play className="size-5" />} onClick={play}
-              disabled={!installed || !supported || !!running} busy={run === "starting"}>
+            <Button
+              variant="primary"
+              size="lg"
+              icon={<Play className="size-5" />}
+              onClick={play}
+              disabled={!installed || !supported || !!running}
+              busy={run === "starting"}
+            >
               {running && run !== "starting" ? "Playing" : "Play"}
             </Button>
             {(p?.state === "outdated" || p?.state === "byHand" || p?.state === "notInstalled") && (
@@ -87,23 +100,50 @@ export function Home() {
             {failure && (
               <Notice kind="error" title="The game did not start">
                 BWLaunch.exe reported a problem (exit code {failure.launcherExitCode ?? "?"}).
-                {failure.logTail && <pre className="mt-2 max-h-40 overflow-auto rounded bg-ink-950/70 p-2 font-mono text-[11px] leading-snug text-ivory-300">{failure.logTail}</pre>}
+                {failure.logTail && (
+                  <pre className="mt-2 max-h-40 overflow-auto rounded bg-ink-950/70 p-2 font-mono text-[11px] leading-snug text-ivory-300">
+                    {failure.logTail}
+                  </pre>
+                )}
               </Notice>
             )}
           </div>
         </div>
 
         <div className="mt-auto grid gap-4 pt-12 lg:grid-cols-[2fr_1fr]">
-          <Card title="Game folder" actions={<Button size="sm" variant="ghost" icon={<FolderCog className="size-4" />} onClick={() => setWizard(true)}>Change…</Button>}>
+          <Card
+            title="Game folder"
+            actions={
+              <Button size="sm" variant="ghost" icon={<FolderCog className="size-4" />} onClick={() => setWizard(true)}>
+                Change…
+              </Button>
+            }
+          >
             <p className="break-all font-mono text-xs text-ivory-300">{folder}</p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <Button size="sm" icon={<FolderOpen className="size-4" />} onClick={() => open(folder)}>Open folder</Button>
-              <Button size="sm" icon={<Image className="size-4" />} onClick={() => open(joinPath(folder, "Screenshots"), true)}>Screenshots</Button>
-              <Button size="sm" icon={<FileText className="size-4" />} onClick={() => open(joinPath(folder, "BWDecomp"))}>Documentation</Button>
+              <Button size="sm" icon={<FolderOpen className="size-4" />} onClick={() => open(folder)}>
+                Open folder
+              </Button>
+              <Button
+                size="sm"
+                icon={<Image className="size-4" />}
+                onClick={() => open(joinPath(folder, "Screenshots"), true)}
+              >
+                Screenshots
+              </Button>
+              <Button
+                size="sm"
+                icon={<FileText className="size-4" />}
+                onClick={() => open(joinPath(folder, "BWDecomp"))}
+              >
+                Documentation
+              </Button>
             </div>
           </Card>
           <Card title="Log">
-            <p className="text-xs text-ivory-400">BWDecomp.log in the game folder says what happened. Include it when you report a problem.</p>
+            <p className="text-xs text-ivory-400">
+              BWDecomp.log in the game folder says what happened. Include it when you report a problem.
+            </p>
             <LogPeek folder={folder} />
           </Card>
         </div>
@@ -117,9 +157,13 @@ function LogPeek({ folder }: { folder: string }) {
   return (
     <div className="mt-3">
       {text === null ? (
-        <Button size="sm" onClick={() => api.readLogTail(folder, 60).then((t) => setText(t || "(empty)"))}>Show the end of the log</Button>
+        <Button size="sm" onClick={() => api.readLogTail(folder, 60).then((t) => setText(t || "(empty)"))}>
+          Show the end of the log
+        </Button>
       ) : (
-        <pre className="max-h-48 overflow-auto rounded-lg bg-ink-950 p-3 font-mono text-[11px] leading-snug text-ivory-300">{text}</pre>
+        <pre className="max-h-48 overflow-auto rounded-lg bg-ink-950 p-3 font-mono text-[11px] leading-snug text-ivory-300">
+          {text}
+        </pre>
       )}
     </div>
   );

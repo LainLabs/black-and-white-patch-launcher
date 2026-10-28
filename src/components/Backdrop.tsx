@@ -20,7 +20,14 @@ export function Backdrop({ className }: { className?: string }) {
           </linearGradient>
         </defs>
         <rect width="1600" height="900" fill="url(#sky)" />
-        <circle className="animate-glow" style={{ transformOrigin: "1250px 300px" }} cx="1250" cy="300" r="300" fill="url(#sun)" />
+        <circle
+          className="animate-glow"
+          style={{ transformOrigin: "1250px 300px" }}
+          cx="1250"
+          cy="300"
+          r="300"
+          fill="url(#sun)"
+        />
         <g transform="translate(1250 300) scale(0.8)">
           <circle r="86" fill="#f4efe4" opacity="0.92" />
           <path d="M0 -86a86 86 0 0 0 0 172z" fill="#16130f" opacity="0.92" />

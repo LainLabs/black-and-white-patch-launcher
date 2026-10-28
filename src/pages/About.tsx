@@ -36,7 +36,10 @@ export function About() {
     try {
       const result = await api.removePatch(folder);
       await client.invalidateQueries({ queryKey: keys.patch(folder) });
-      setMessage({ kind: "success", text: result.kept.length ? `Removed. Kept because you changed them: ${result.kept.join(", ")}.` : "Removed." });
+      setMessage({
+        kind: "success",
+        text: result.kept.length ? `Removed. Kept because you changed them: ${result.kept.join(", ")}.` : "Removed.",
+      });
     } catch (e) {
       setMessage({ kind: "error", text: errorText(e) });
     } finally {
@@ -52,7 +55,10 @@ export function About() {
           <h1 className="font-display text-3xl text-ivory-50">About</h1>
           <div className="mt-1 flex flex-wrap gap-2">
             <Badge>Launcher {info.data?.launcherVersion}</Badge>
-            <Badge>Patch {info.data?.decompVersion || "not bundled"}{info.data?.decompCommit ? ` (${info.data.decompCommit})` : ""}</Badge>
+            <Badge>
+              Patch {info.data?.decompVersion || "not bundled"}
+              {info.data?.decompCommit ? ` (${info.data.decompCommit})` : ""}
+            </Badge>
           </div>
         </div>
       </header>
@@ -70,24 +76,36 @@ export function About() {
             </li>
           ))}
         </ul>
-        <Button className="mt-3" size="sm" onClick={() => api.openFolder(joinPath(folder, "BWDecomp")).catch((e) => setMessage({ kind: "error", text: errorText(e) }))}>
+        <Button
+          className="mt-3"
+          size="sm"
+          onClick={() =>
+            api.openFolder(joinPath(folder, "BWDecomp")).catch((e) => setMessage({ kind: "error", text: errorText(e) }))
+          }
+        >
           Open the documentation folder
         </Button>
       </Card>
 
       <Card title="Game folder">
         <p className="break-all font-mono text-xs text-ivory-300">{folder}</p>
-        {message && <div className="mt-3"><Notice kind={message.kind}>{message.text}</Notice></div>}
+        {message && (
+          <div className="mt-3">
+            <Notice kind={message.kind}>{message.text}</Notice>
+          </div>
+        )}
         <div className="mt-4 flex gap-2">
           <Button onClick={() => setWizard(true)}>Set up again…</Button>
-          <Button variant="danger" icon={<Trash2 className="size-4" />} onClick={remove} busy={busy}>Remove the patch</Button>
+          <Button variant="danger" icon={<Trash2 className="size-4" />} onClick={remove} busy={busy}>
+            Remove the patch
+          </Button>
         </div>
       </Card>
 
       <p className="text-xs leading-relaxed text-ink-500">
-        Black &amp; White is a game by Lionhead Studios. This launcher and the patch are fan projects, not
-        affiliated with or endorsed by Lionhead Studios or the game's publishers, and contain none of the game's code
-        or data. You need your own copy of the game. Launcher state: {info.data?.stateDir}
+        Black &amp; White is a game by Lionhead Studios. This launcher and the patch are fan projects, not affiliated
+        with or endorsed by Lionhead Studios or the game's publishers, and contain none of the game's code or data. You
+        need your own copy of the game. Launcher state: {info.data?.stateDir}
       </p>
     </div>
   );

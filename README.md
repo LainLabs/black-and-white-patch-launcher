@@ -117,7 +117,7 @@ Studio C++ build tools and Node.js 22.18+, 24.11+ or 26+.
 .\scripts\sync-payload.ps1      # the patch's build output into payload\
 npm install
 npm run tauri dev               # or: npm run dev, for the interface alone with sample data
-npx vp check; npx vp test       # lint and type check, then the interface's tests
+npx vp check; npx vp test       # format, lint and type check, then the interface's tests
 .\scripts\package.ps1           # tests, then the setup program, portable exe and SHA-256 sums in dist\
 ```
 

@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 
-// The whole web toolchain (Vite+): `vp dev` / `vp build` for Tauri, `vp test`, and `vp check` (lint + type check).
+// The whole web toolchain (Vite+): `vp dev` / `vp build` for Tauri, `vp test`, and `vp check` (format, lint, types).
 // Tauri serves the dev build from a fixed port and reads the production build from dist-web/.
 export default defineConfig({
   // Loaded only when Vite runs (dev, build, test), not when vp reads the lint/fmt settings.
@@ -22,8 +22,6 @@ export default defineConfig({
     // Type checking (tsgolint, on TypeScript 7) replaces `tsc --noEmit`.
     options: { typeAware: true, typeCheck: true },
   },
-  // The code is formatted by hand in a denser style than any formatter keeps, so `vp check` does not format.
-  // `vp fmt <file>` formats a file in the same width when wanted.
-  check: { fmt: false },
+  // Markdown keeps its hand-aligned tables and lists.
   fmt: { printWidth: 120, ignorePatterns: ["*.md"] },
 });

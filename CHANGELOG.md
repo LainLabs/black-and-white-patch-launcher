@@ -8,6 +8,7 @@ bundles.
 
 - Development: the interface is built, tested, linted and type-checked with Vite+ 1.4 (`vp`), which replaces the
   separate Vite, Vitest and `tsc` steps. The built interface is unchanged. Building needs Node.js 22.18+, 24.11+ or 26+.
+- The interface's code is formatted with Oxfmt, and `vp check` (part of every build) checks it.
 - `npm run tauri dev` no longer watches `src-tauri\` for web changes, where Cargo writes its build output.
 
 ## 0.1.4

@@ -14,7 +14,16 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: ReactNode;
 };
 
-export function Button({ variant = "secondary", size = "md", busy, icon, className, children, disabled, ...rest }: ButtonProps) {
+export function Button({
+  variant = "secondary",
+  size = "md",
+  busy,
+  icon,
+  className,
+  children,
+  disabled,
+  ...rest
+}: ButtonProps) {
   return (
     <button
       {...rest}
@@ -24,7 +33,8 @@ export function Button({ variant = "secondary", size = "md", busy, icon, classNa
         size === "sm" && "h-8 px-3 text-sm",
         size === "md" && "h-10 px-4 text-sm",
         size === "lg" && "h-14 px-8 text-lg",
-        variant === "primary" && "bg-gold-400 text-ink-950 hover:bg-gold-300 shadow-[0_0_24px_-6px_var(--color-gold-500)]",
+        variant === "primary" &&
+          "bg-gold-400 text-ink-950 hover:bg-gold-300 shadow-[0_0_24px_-6px_var(--color-gold-500)]",
         variant === "secondary" && "border border-ink-600 bg-ink-800 text-ivory-100 hover:bg-ink-700",
         variant === "ghost" && "text-ivory-300 hover:bg-ink-800 hover:text-ivory-50",
         variant === "danger" && "border border-evil-400/50 bg-evil-400/10 text-evil-400 hover:bg-evil-400/20",
@@ -37,7 +47,17 @@ export function Button({ variant = "secondary", size = "md", busy, icon, classNa
   );
 }
 
-export function Switch({ checked, onChange, disabled, label }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean; label: string }) {
+export function Switch({
+  checked,
+  onChange,
+  disabled,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  disabled?: boolean;
+  label: string;
+}) {
   return (
     <button
       type="button"
@@ -61,9 +81,23 @@ export function Switch({ checked, onChange, disabled, label }: { checked: boolea
   );
 }
 
-export function Segmented({ value, options, onChange, label }: { value: string; options: { value: string; label: string }[]; onChange: (v: string) => void; label: string }) {
+export function Segmented({
+  value,
+  options,
+  onChange,
+  label,
+}: {
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (v: string) => void;
+  label: string;
+}) {
   return (
-    <div role="radiogroup" aria-label={label} className="inline-flex flex-wrap rounded-lg border border-ink-600 bg-ink-850 p-0.5">
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="inline-flex flex-wrap rounded-lg border border-ink-600 bg-ink-850 p-0.5"
+    >
       {options.map((o) => (
         <button
           key={o.value}
@@ -86,7 +120,17 @@ export function Segmented({ value, options, onChange, label }: { value: string; 
 export const inputClass =
   "h-10 rounded-lg border border-ink-600 bg-ink-850 px-3 text-sm text-ivory-50 placeholder:text-ink-500 focus:border-gold-500 focus:outline-none";
 
-export function Card({ title, actions, children, className }: { title?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string }) {
+export function Card({
+  title,
+  actions,
+  children,
+  className,
+}: {
+  title?: ReactNode;
+  actions?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <section className={cx("rounded-xl border border-ink-700 bg-ink-900/80 p-5", className)}>
       {(title || actions) && (
@@ -107,7 +151,15 @@ const noticeStyles = {
   error: { icon: XCircle, cls: "border-evil-400/40 bg-evil-400/10 text-evil-400" },
 };
 
-export function Notice({ kind = "info", title, children }: { kind?: keyof typeof noticeStyles; title?: ReactNode; children?: ReactNode }) {
+export function Notice({
+  kind = "info",
+  title,
+  children,
+}: {
+  kind?: keyof typeof noticeStyles;
+  title?: ReactNode;
+  children?: ReactNode;
+}) {
   const { icon: Icon, cls } = noticeStyles[kind];
   return (
     <div className={cx("flex gap-3 rounded-lg border p-3 text-sm", cls)} role={kind === "error" ? "alert" : "status"}>
@@ -120,7 +172,13 @@ export function Notice({ kind = "info", title, children }: { kind?: keyof typeof
   );
 }
 
-export function Badge({ tone = "neutral", children }: { tone?: "neutral" | "good" | "warn" | "bad" | "gold"; children: ReactNode }) {
+export function Badge({
+  tone = "neutral",
+  children,
+}: {
+  tone?: "neutral" | "good" | "warn" | "bad" | "gold";
+  children: ReactNode;
+}) {
   return (
     <span
       className={cx(

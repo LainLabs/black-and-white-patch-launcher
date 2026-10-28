@@ -14,7 +14,11 @@ export function Settings() {
   const state = useLauncherState();
   const folder = state.data?.gameFolder ?? "";
   const client = useQueryClient();
-  const snapshot = useQuery({ queryKey: keys.settings(folder), queryFn: () => api.readSettings(folder), enabled: !!folder });
+  const snapshot = useQuery({
+    queryKey: keys.settings(folder),
+    queryFn: () => api.readSettings(folder),
+    enabled: !!folder,
+  });
   const original = useMemo(() => (snapshot.data ? toValues(snapshot.data) : null), [snapshot.data]);
   const [values, setValues] = useState<Values>({});
   const [tab, setTab] = useState<Tab>("game");
@@ -71,25 +75,54 @@ export function Settings() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="ghost" icon={<RotateCcw className="size-4" />} onClick={reset} title="BWDecomp.ini as shipped">Defaults</Button>
-          <Button variant="ghost" icon={<Undo2 className="size-4" />} onClick={() => original && setValues(original)} disabled={!dirty}>Revert</Button>
-          <Button variant="primary" icon={<Save className="size-4" />} onClick={save} busy={busy} disabled={!dirty}>Save</Button>
+          <Button
+            variant="ghost"
+            icon={<RotateCcw className="size-4" />}
+            onClick={reset}
+            title="BWDecomp.ini as shipped"
+          >
+            Defaults
+          </Button>
+          <Button
+            variant="ghost"
+            icon={<Undo2 className="size-4" />}
+            onClick={() => original && setValues(original)}
+            disabled={!dirty}
+          >
+            Revert
+          </Button>
+          <Button variant="primary" icon={<Save className="size-4" />} onClick={save} busy={busy} disabled={!dirty}>
+            Save
+          </Button>
         </div>
       </header>
 
       {snapshot.error && <Notice kind="error">{errorText(snapshot.error)}</Notice>}
-      {message && <div className="mb-4"><Notice kind={message.kind}>{message.text}</Notice></div>}
+      {message && (
+        <div className="mb-4">
+          <Notice kind={message.kind}>{message.text}</Notice>
+        </div>
+      )}
       {snapshot.data && !snapshot.data.iniExists && (
-        <div className="mb-4"><Notice kind="warning">The game folder has no BWDecomp.ini; saving creates one from the shipped defaults.</Notice></div>
+        <div className="mb-4">
+          <Notice kind="warning">
+            The game folder has no BWDecomp.ini; saving creates one from the shipped defaults.
+          </Notice>
+        </div>
       )}
 
       <div role="tablist" aria-label="Settings sections" className="mb-4 flex flex-wrap gap-1 border-b border-ink-700">
         {TABS.map((t) => (
-          <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={tab === t.id}
+            onClick={() => setTab(t.id)}
             className={cx(
               "-mb-px border-b-2 px-4 py-2 text-sm transition-colors",
               tab === t.id ? "border-gold-400 text-ivory-50" : "border-transparent text-ivory-400 hover:text-ivory-100",
-            )}>
+            )}
+          >
             {t.label}
           </button>
         ))}
@@ -100,12 +133,31 @@ export function Settings() {
           <p className="mb-2 text-sm text-ivory-400">{TABS.find((t) => t.id === tab)?.blurb}</p>
           {tab === "game" && <ResolutionField values={values} onChange={onChange} hint={h["game.ScreenW"]} />}
           {FIELDS.filter((f) => f.tab === tab).map((f) => (
-            <SettingField key={f.id} field={f} values={values} onChange={onChange} hint={h[f.id]} maxDetail={maxDetail} />
+            <SettingField
+              key={f.id}
+              field={f}
+              values={values}
+              onChange={onChange}
+              hint={h[f.id]}
+              maxDetail={maxDetail}
+            />
           ))}
           {tab === "textures" && (
             <div className="flex gap-2 pt-4">
-              <Button size="sm" icon={<FolderOpen className="size-4" />} onClick={() => api.openFolder(joinPath(folder, "Textures", "Replace"), true)}>Open Textures\Replace</Button>
-              <Button size="sm" icon={<FolderOpen className="size-4" />} onClick={() => api.openFolder(joinPath(folder, "Textures", "Dump"), true)}>Open Textures\Dump</Button>
+              <Button
+                size="sm"
+                icon={<FolderOpen className="size-4" />}
+                onClick={() => api.openFolder(joinPath(folder, "Textures", "Replace"), true)}
+              >
+                Open Textures\Replace
+              </Button>
+              <Button
+                size="sm"
+                icon={<FolderOpen className="size-4" />}
+                onClick={() => api.openFolder(joinPath(folder, "Textures", "Dump"), true)}
+              >
+                Open Textures\Dump
+              </Button>
             </div>
           )}
         </Card>
