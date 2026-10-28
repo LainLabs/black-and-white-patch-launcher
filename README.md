@@ -108,13 +108,16 @@ added in later launcher versions are listed rather than rejected.
 ## For developers
 
 The launcher is a [Tauri 2](https://tauri.app) app: a Rust backend for installing, settings, elevation, launching and
-updates, and a React and TypeScript interface. The patch's release files are embedded at build time from `payload\`.
+updates, and a React and TypeScript interface built with [Vite+](https://viteplus.dev) (`vp`: dev server, build, tests,
+lint and type check). The patch's release files are embedded at build time from `payload\`. You need Rust, the Visual
+Studio C++ build tools and Node.js 22.18+, 24.11+ or 26+.
 
 ```powershell
 . .\scripts\env.ps1             # cargo and the MSVC tools on PATH
 .\scripts\sync-payload.ps1      # the patch's build output into payload\
 npm install
 npm run tauri dev               # or: npm run dev, for the interface alone with sample data
+npx vp check; npx vp test       # lint and type check, then the interface's tests
 .\scripts\package.ps1           # tests, then the setup program, portable exe and SHA-256 sums in dist\
 ```
 

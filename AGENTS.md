@@ -16,8 +16,11 @@ write "decompilation" in UI text, messages or player docs. One executable:
 It replaces the decomp's `BWDecompSetup.exe` as the player-facing download. Setup still exists in the decomp repo
 for `/quiet` installs, and both write the **same manifest**, so either can update or remove what the other installed.
 
-Stack: **Tauri 2** (Rust backend, `src-tauri/`) + **React 19 / TypeScript / Vite / Tailwind 4** (`src/`), TanStack
+Stack: **Tauri 2** (Rust backend, `src-tauri/`) + **React 19 / TypeScript / Vite+ / Tailwind 4** (`src/`), TanStack
 Query for backend reads, Zustand for UI state. Tauri 3 is still alpha: stay on Tauri 2 until it is stable.
+**Vite+** (the `vite-plus` package, command `vp`) is the whole web toolchain, set up in `vite.config.ts`: Vite for the
+dev server and the build Tauri embeds, Vitest for tests, Oxlint for lint and, through tsgolint, the type check (there
+is no `tsc` step).
 
 ## The decomp is the source of truth
 
@@ -40,6 +43,7 @@ This repo **consumes** the decomp; it never changes it. When the decomp changes,
 ```
 AGENTS.md README.md CHANGELOG.md
 updates.ini                GitHub repositories checked for launcher and patch updates (built in by build.rs)
+vite.config.ts             Vite+: dev server (port 1420) and build (dist-web/) for Tauri, tests, lint, type check
 scripts/env.ps1            puts cargo + MSVC x64 tools on PATH (dot-source it)
 scripts/sync-payload.ps1   decomp build\Release + docs -> payload\ (+ payload.json)
 scripts/package.ps1        sync -> tests -> tauri build -> dist\ (Setup, Portable, SHA256SUMS)
@@ -75,13 +79,19 @@ npm install
 npm run tauri dev                   # the app with hot reload (real backend)
 npm run dev                         # UI only in a browser at http://localhost:1420 with the fake backend
                                     #   ?mock=fresh shows the first-run wizard
-npx tsc --noEmit; npx vitest run    # UI checks
+npx vp check; npx vp test           # UI checks: lint + type check, then the tests (npm run build runs vp check too)
 cd src-tauri; cargo test            # backend tests (temp folders only; never touch a real game folder)
 .\scripts\package.ps1               # release files in dist\
 ```
 
+`vp` is the project's own copy (`npx vp`, or `vp` from npm scripts); a global Vite+ install works too but is not needed.
+`vp <name>` is a built-in command (`vp dev`, `vp build`, `vp test`, `vp check`); `vp run <name>` runs a package.json
+script. `vp check` does not format (`check.fmt: false`): the code is formatted by hand in a denser style than Oxfmt
+keeps. `npx vp fmt <file>` formats one file at the project's width when that helps.
+
 Toolchain: Rust stable MSVC (`rustup`), Visual Studio 2022 C++ build tools (x64 for the launcher; the decomp needs
-x86/Win32), Node 20+. Without `payload\` the launcher still builds, for UI work, and says it has nothing to install.
+x86/Win32), Node 22.18+, 24.11+ or 26+ (what Vite+ supports). Without `payload\` the launcher still builds, for UI work,
+and says it has nothing to install.
 
 ## Rules
 
@@ -108,7 +118,7 @@ x86/Win32), Node 20+. Without `payload\` the launcher still builds, for UI work,
 ## Common changes
 
 **The decomp added or changed an INI key.** Add or adjust one entry in `src/settings/schema.ts` (section, key, tab,
-label, help, type, range, `fallback` = the shipped default). `npx vitest run` fails until every key in the shipped
+label, help, type, range, `fallback` = the shipped default). `npx vp test` fails until every key in the shipped
 `BWDecomp.ini` is in the schema with the same default, and nothing in the schema is missing from the file. Add an
 interaction to `hints()` in `settings/logic.ts` if the key depends on another.
 
@@ -158,9 +168,16 @@ there, then add the kind here.
 `styles.css` (`ink`, `ivory`, `gold`, `good`, `evil`). Check the page in a browser with `npm run dev` (fake backend)
 before trying it in the app.
 
+**A new Vite+ version.** Three entries in `package.json` move together: `vite-plus`, the `vite` devDependency and the
+`vite` override (both `npm:@voidzero-dev/vite-plus-core@<same version>`; the alias lets the React and Tailwind plugins
+find Vite). Let the new version's migrator change them, then check and commit the diff:
+`npx --package=vite-plus@<v> vp migrate --no-interactive`, `npm install`, `npx vp check`, `npx vp test`,
+`npm run build`. `npx vp toolchain` shows the Vite, Vitest and Oxlint versions a release bundles. In code, import
+config helpers from `vite-plus` and test functions from `vite-plus/test`, never `vite` or `vitest` (lint rejects them).
+
 ## Verifying a change
 
-1. `npx tsc --noEmit`, `npx vitest run`, `cargo test` (in `src-tauri`).
+1. `npx vp check`, `npx vp test`, `cargo test` (in `src-tauri`).
 2. `npm run dev` and look at the affected pages (both `/` and `/?mock=fresh` for wizard changes).
 3. For backend changes, `npm run tauri dev` against a **scratch copy** of a game folder: install, change settings
    (check the `BWDecomp.ini` diff and `HKCU\Software\Lionhead Studios Ltd\Black & White\BWSetup`), enable and disable

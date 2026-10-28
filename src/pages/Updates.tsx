@@ -27,7 +27,9 @@ export function Updates() {
   const launcher = useUpdateCheck("launcher", automatic);
   const patchUpdate = useUpdateCheck("patch", automatic && !!folder);
 
+  // A new launcher state (first load, or after Save) replaces the edits.
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect
     if (state.data) setDraft(state.data);
   }, [state.data]);
 

@@ -39,8 +39,8 @@ if ($version -ne $tauriVersion -or $version -ne $cargoVersion) {
 Push-Location $root
 try {
     Invoke-Checked "npm ci" { npm ci --no-audit --no-fund }
-    Invoke-Checked "TypeScript" { npx tsc --noEmit }
-    Invoke-Checked "Vitest" { npx vitest run }
+    Invoke-Checked "vp check" { npx vp check }
+    Invoke-Checked "vp test" { npx vp test }
     Push-Location src-tauri
     try { Invoke-Checked "cargo test" { cargo test --release } } finally { Pop-Location }
     Invoke-Checked "tauri build" { npx tauri build }

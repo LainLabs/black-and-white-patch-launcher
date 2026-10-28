@@ -21,7 +21,9 @@ export function Settings() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ kind: "success" | "error"; text: string } | null>(null);
 
+  // A new snapshot (first load, or after Save) replaces the edits.
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect
     if (original) setValues(original);
   }, [original]);
 

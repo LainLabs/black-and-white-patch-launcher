@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import type { SettingsSnapshot } from "@/lib/api";
 import { hints, isEmptyChange, toChange, toValues, vkFromKey, vkName } from "./logic";
 

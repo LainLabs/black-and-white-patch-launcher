@@ -1,13 +1,16 @@
 {
   "name": "bw-launcher",
-  "private": true,
   "version": "0.1.4",
+  "private": true,
   "type": "module",
+  "engines": {
+    "node": "^22.18.0 || ^24.11.0 || >=26.0.0"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "dev": "vp dev",
+    "build": "vp check && vp build",
+    "check": "vp check",
+    "test": "vp test",
     "tauri": "tauri"
   },
   "dependencies": {
@@ -28,8 +31,10 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
     "tailwindcss": "4.3.3",
-    "typescript": "6.0.3",
-    "vite": "8.3.5",
-    "vitest": "5.0.5"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0",
+    "vite-plus": "1.4.0"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0"
   }
 }

@@ -4,6 +4,12 @@ Semantic versioning. The version is in `package.json`, `src-tauri/Cargo.toml` an
 (`scripts/package.ps1` refuses if they differ) and tagged in git as `vX.Y.Z`. Each entry names the patch version it
 bundles.
 
+## Unreleased
+
+- Development: the interface is built, tested, linted and type-checked with Vite+ 1.4 (`vp`), which replaces the
+  separate Vite, Vitest and `tsc` steps. The built interface is unchanged. Building needs Node.js 22.18+, 24.11+ or 26+.
+- `npm run tauri dev` no longer watches `src-tauri\` for web changes, where Cargo writes its build output.
+
 ## 0.1.4
 
 Bundles patch 0.11.1.
