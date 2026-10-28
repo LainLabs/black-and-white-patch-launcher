@@ -4,6 +4,14 @@ Semantic versioning. The version is in `package.json`, `src-tauri/Cargo.toml` an
 (`scripts/package.ps1` refuses if they differ) and tagged in git as `vX.Y.Z`. Each entry names the patch version it
 bundles.
 
+## 0.1.4
+
+Bundles patch 0.11.1.
+
+- Update repositories moved to `LainLabs/black-and-white-patch-launcher` and `LainLabs/black-and-white-patch-tool`.
+  A saved setting that still names the old `konstantine-v` repositories follows the new ones.
+- The default repositories are set in `updates.ini` instead of the code, so moving them needs no code change.
+
 ## 0.1.3
 
 Bundles patch 0.11.0.

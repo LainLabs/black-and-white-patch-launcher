@@ -1,5 +1,6 @@
 //! Embeds the patch's files (payload/, filled by scripts/sync-payload.ps1) into the launcher, so one
 //! executable carries everything it installs. Without a payload the launcher still builds, for UI work, and says so.
+//! Also reads the update repositories from updates.ini (see `update_repositories`).
 
 use std::{env, fmt::Write as _, fs, path::PathBuf};
 
@@ -66,5 +67,50 @@ fn main() {
     let out = PathBuf::from(env::var("OUT_DIR").unwrap()).join("payload.rs");
     fs::write(out, code).unwrap();
 
+    update_repositories(&manifest_dir.join("..").join("updates.ini"));
+
     tauri_build::build();
+}
+
+/// updates.ini names the GitHub repository of each product ([Launcher], [Patch]: `Repository`, and earlier defaults
+/// in `Previous`). They reach state.rs as BW_<PRODUCT>_REPO and BW_<PRODUCT>_PREVIOUS_REPOS. A build can still
+/// override a repository with BW_LAUNCHER_UPDATE_REPO / BW_PATCH_UPDATE_REPO.
+fn update_repositories(ini: &PathBuf) {
+    println!("cargo:rerun-if-changed={}", ini.display());
+    let text = fs::read_to_string(ini).unwrap_or_else(|e| panic!("cannot read {}: {e}", ini.display()));
+    let mut section = String::new();
+    let mut values = std::collections::HashMap::new();
+    for line in text.lines().map(str::trim) {
+        if line.is_empty() || line.starts_with(';') || line.starts_with('#') {
+            continue;
+        }
+        if let Some(name) = line.strip_prefix('[').and_then(|l| l.strip_suffix(']')) {
+            section = name.trim().to_ascii_lowercase();
+        } else if let Some((key, value)) = line.split_once('=') {
+            values.insert((section.clone(), key.trim().to_ascii_lowercase()), value.trim().to_string());
+        }
+    }
+    let is_repo = |repo: &str| {
+        let part = |s: &str| !s.is_empty() && s.bytes().all(|c| c.is_ascii_alphanumeric() || b"-_.".contains(&c));
+        matches!(repo.split_once('/'), Some((owner, name)) if part(owner) && part(name))
+    };
+    for (section, product) in [("launcher", "LAUNCHER"), ("patch", "PATCH")] {
+        let override_var = format!("BW_{product}_UPDATE_REPO");
+        println!("cargo:rerun-if-env-changed={override_var}");
+        let repo = env::var(&override_var).ok().filter(|r| !r.is_empty()).unwrap_or_else(|| {
+            values.get(&(section.to_string(), "repository".to_string())).cloned().unwrap_or_else(|| {
+                panic!("{}: [{section}] needs Repository = owner/name", ini.display())
+            })
+        });
+        assert!(is_repo(&repo), "{}: [{section}] Repository {repo:?} is not owner/name", ini.display());
+        let previous: Vec<&str> = values
+            .get(&(section.to_string(), "previous".to_string()))
+            .map(|p| p.split(',').map(str::trim).filter(|p| !p.is_empty()).collect())
+            .unwrap_or_default();
+        for old in &previous {
+            assert!(is_repo(old), "{}: [{section}] Previous {old:?} is not owner/name", ini.display());
+        }
+        println!("cargo:rustc-env=BW_{product}_REPO={repo}");
+        println!("cargo:rustc-env=BW_{product}_PREVIOUS_REPOS={}", previous.join(","));
+    }
 }

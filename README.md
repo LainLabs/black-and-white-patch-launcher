@@ -118,6 +118,8 @@ npm run tauri dev               # or: npm run dev, for the interface alone with 
 .\scripts\package.ps1           # tests, then the setup program, portable exe and SHA-256 sums in dist\
 ```
 
+The GitHub repositories checked for launcher and patch updates are set in [`updates.ini`](updates.ini).
+
 [AGENTS.md](AGENTS.md) is the guide to the code: layout, how each part matches the patch's own setup program, rules,
 and how to verify a change. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

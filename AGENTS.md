@@ -39,6 +39,7 @@ This repo **consumes** the decomp; it never changes it. When the decomp changes,
 
 ```
 AGENTS.md README.md CHANGELOG.md
+updates.ini                GitHub repositories checked for launcher and patch updates (built in by build.rs)
 scripts/env.ps1            puts cargo + MSVC x64 tools on PATH (dot-source it)
 scripts/sync-payload.ps1   decomp build\Release + docs -> payload\ (+ payload.json)
 scripts/package.ps1        sync -> tests -> tauri build -> dist\ (Setup, Portable, SHA256SUMS)
@@ -56,7 +57,8 @@ src/                       React UI
   lib/store.ts             current page, run state, wizard flag
   lib/devMock.ts           fake backend for browser previews (dev only)
 src-tauri/
-  build.rs                 payload/payload.json -> OUT_DIR/payload.rs (include_bytes! of each file)
+  build.rs                 payload/payload.json -> OUT_DIR/payload.rs (include_bytes! of each file);
+                           ../updates.ini -> BW_*_REPO compile-time variables
   tauri.conf.json          window, CSP, NSIS bundle (per-user, WebView2 bootstrapper)
   capabilities/default.json  plugin permissions for the window
   src/main.rs, lib.rs      CLI modes (--elevated, --play) and the Tauri builder
@@ -115,12 +117,17 @@ version (`package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`: pa
 a CHANGELOG entry naming the decomp version, `.\scripts\package.ps1`, tag `vX.Y.Z`, publish `dist\BWLauncher-*` on a
 GitHub release in the launcher repository (the update check needs `-Setup.exe` and `-SHA256SUMS.txt`).
 
-**Update repositories.** The launcher checks two, each a setting on the Updates page (empty = the default):
+**Update repositories.** The launcher checks two, each a setting on the Updates page (empty = the default). The
+defaults live in **`updates.ini`** at the repository root, never in code: `build.rs` reads it (and fails on a value
+that is not `owner/name`) and `state.rs` gets them as `DEFAULT_LAUNCHER_REPO` / `DEFAULT_PATCH_REPO`. To move a
+repository, change its `Repository` and add the old one to `Previous`: a player's saved setting that names an earlier
+default then follows the new one. `state::save` stores the default as empty, so the next move needs no migration.
+GitHub also redirects a transferred repository, which keeps older launchers working.
 
-| Product | Default (`state.rs`) | Build override | Release files the check needs | What installing does |
+| Product | `updates.ini` section | Build override | Release files the check needs | What installing does |
 |---|---|---|---|---|
-| Launcher | `konstantine-v/black-and-white-patch-launcher` | `BW_LAUNCHER_UPDATE_REPO` | `BWLauncher-<v>-Setup.exe`, `BWLauncher-<v>-SHA256SUMS.txt` | runs the new setup, closes the launcher |
-| Patch | `konstantine-v/black-and-white-patch-tool` | `BW_PATCH_UPDATE_REPO` | `BWDecomp-<v>.zip`, `BWDecomp-<v>-SHA256SUMS.txt` (the decomp's `package.ps1` writes both) | installs the zip's files into the game folder (`Request::InstallZip`), with rights if needed |
+| Launcher | `[Launcher]` (`LainLabs/black-and-white-patch-launcher`) | `BW_LAUNCHER_UPDATE_REPO` | `BWLauncher-<v>-Setup.exe`, `BWLauncher-<v>-SHA256SUMS.txt` | runs the new setup, closes the launcher |
+| Patch | `[Patch]` (`LainLabs/black-and-white-patch-tool`) | `BW_PATCH_UPDATE_REPO` | `BWDecomp-<v>.zip`, `BWDecomp-<v>-SHA256SUMS.txt` (the decomp's `package.ps1` writes both) | installs the zip's files into the game folder (`Request::InstallZip`), with rights if needed |
 
 `updates::check` takes the newest non-draft, non-prerelease release with the product's file and reads the version
 from that file name, never from the tag, so other releases and files in a repository do no harm

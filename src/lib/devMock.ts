@@ -13,8 +13,8 @@ export function installDevMock() {
   let state: LauncherState = {
     gameFolder: fresh ? null : folder,
     onPlay: "minimize",
-    launcherRepo: "konstantine-v/black-and-white-patch-launcher",
-    patchRepo: "konstantine-v/black-and-white-patch-tool",
+    launcherRepo: "LainLabs/black-and-white-patch-launcher",
+    patchRepo: "LainLabs/black-and-white-patch-tool",
     checkUpdatesOnStart: true,
     gameArguments: [],
   };
@@ -58,7 +58,7 @@ export function installDevMock() {
     const a = (args ?? {}) as Record<string, unknown>;
     switch (cmd) {
       case "app_info":
-        return { launcherVersion: "0.1.3", decompVersion: "0.11.0", decompCommit: "938ed3d", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
+        return { launcherVersion: "0.1.4", decompVersion: "0.11.1", decompCommit: "aa6fbcb", hasPayload: true, stateDir: "%APPDATA%\\BWLauncher", addonsDir: "%APPDATA%\\BWLauncher\\addons", elevated: false };
       case "get_state":
         return state;
       case "set_state":
@@ -84,7 +84,7 @@ export function installDevMock() {
       case "check_updates": {
         const asset = (name: string) => ({ name, url: `https://github.com/example/${name}`, size: 1 });
         return a.product === "launcher"
-          ? { product: "launcher", currentVersion: "0.1.3", latestVersion: "0.1.3", newer: false, name: "Launcher 0.1.3", notes: "", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWLauncher-0.1.3-Setup.exe"), sums: asset("BWLauncher-0.1.3-SHA256SUMS.txt") }
+          ? { product: "launcher", currentVersion: "0.1.4", latestVersion: "0.1.4", newer: false, name: "Launcher 0.1.4", notes: "", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWLauncher-0.1.4-Setup.exe"), sums: asset("BWLauncher-0.1.4-SHA256SUMS.txt") }
           : { product: "patch", currentVersion: "0.11.0", latestVersion: "0.11.1", newer: true, name: "v0.11.1", notes: "- Example release notes", pageUrl: "https://github.com/example", publishedAt: "", download: asset("BWDecomp-0.11.1.zip"), sums: asset("BWDecomp-0.11.1-SHA256SUMS.txt") };
       }
       case "install_patch_update":
